@@ -1,0 +1,1 @@
+g++ game.cpp -o main -I SFML/include -L SFML/lib -lsfml-graphics -lsfml-window -lsfml-system
