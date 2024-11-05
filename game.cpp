@@ -22,10 +22,10 @@ namespace path_to_img{
     string katana_path = "images/item/weapon/katana.png";
     string invBack_path = "images/backgrounds/inventory.png";
     vector<string> katana_slash_pathes = {
-                "images/item/k_slash1.png",
-                "images/item/k_slash2.png",
-                "images/item/k_slash3.png",
-                "images/item/k_slash4.png",
+                "images/item/weapon/k_slash1.png",
+                "images/item/weapon/k_slash2.png",
+                "images/item/weapon/k_slash3.png",
+                "images/item/weapon/k_slash4.png",
     };
 
     string stone_path = "images/objects/border.png";
@@ -56,42 +56,6 @@ namespace path_to_img{
 
 
 
-
-
-class Item{
-public:
-     string title;
-     Texture texture;
-     Sprite sprite;
-     float size,masse;
-     Vector2f position;
-     Vector2f sprite_size;
-     bool inInventory = false;
-
-
-     void set_position(Vector2f& pos){
-         this->position = pos;
-     }
-
-     void draw_item(RenderWindow& window){
-         sprite.setPosition(position);
-         sprite.setScale((sprite_size.x / texture.getSize().x),sprite_size.y / texture.getSize().y);
-         window.draw(sprite);
-     }
-
-     void setName(string newTitle){
-         this->title = newTitle;
-     }
-
-     FloatRect get_bounds(){
-         return sprite.getGlobalBounds();
-     }
-     virtual void func(RenderWindow& window,Vector2i& mousePos,
-     vector<unique_ptr<Essence>>& life_objects,
-     vector<unique_ptr<Boundary>>& unlife_objects){
-
-     };
-};
 
 class Boundary{
 private:
@@ -175,7 +139,7 @@ public:
     Clock clock2;
 
 public:
-    void moveEsse(float oX,float oY, const vector<Boundary>& boundaries){
+    void moveEsse(float oX,float oY, const vector<unique_ptr<Boundary>>& boundaries){
           Vector2f newPosition = position;
           newPosition.x += oX * speed;
           newPosition.y += oY * speed;
@@ -184,9 +148,9 @@ public:
           tempSprite.setPosition(newPosition);
 
           for(const auto& boundary : boundaries){
-                   if(tempSprite.getGlobalBounds().intersects(boundary.getBounds())){
+                   if(tempSprite.getGlobalBounds().intersects(boundary->getBounds())){
                       FloatRect playerBounds = tempSprite.getGlobalBounds();
-                      FloatRect boundaryBounds = boundary.getBounds();
+                      FloatRect boundaryBounds = boundary->getBounds();
 
                       float overlapLeft = playerBounds.left + playerBounds.width - boundaryBounds.left;
                       float overlapRight = boundaryBounds.left + boundaryBounds.width - playerBounds.left;
@@ -233,7 +197,7 @@ public:
           window.draw(this->sprite);
     }
 
-    void update(const vector<Boundary>& boundaries){
+    void update(const vector<unique_ptr<Boundary>>& boundaries){
 
             if(clockH.getElapsedTime().asSeconds() >= regTimeH){
                   if(this->health <= this->Max_health){
@@ -313,8 +277,171 @@ public:
 
 };
 
+class Player;
 
-class Effect{};
+class Effect{
+public:
+    string title;
+    string icon_path;
+    Texture texture;
+    Sprite sprite;
+    Vector2f sprite_size;
+
+    float duration;
+    float delay;
+    float impact;
+
+    Clock clock;
+    Clock clock1;
+
+    virtual void func(Player& player){
+
+    }
+
+};
+
+
+
+class Item{
+public:
+     string title;
+     Texture texture;
+     Sprite sprite;
+     float size,masse;
+     Vector2f position;
+     Vector2f sprite_size;
+     bool inInventory = false;
+     int anim_count = 0;
+
+
+     void set_position(Vector2f& pos){
+         this->position = pos;
+     }
+
+     void draw_item(RenderWindow& window){
+         sprite.setPosition(position);
+         sprite.setScale((sprite_size.x / texture.getSize().x),sprite_size.y / texture.getSize().y);
+         window.draw(sprite);
+     }
+
+     void item_draw(RenderWindow& window){
+         sprite.setPosition(position);
+         sprite.setScale(-(sprite_size.x / texture.getSize().x),sprite_size.y / texture.getSize().y);
+         window.draw(sprite);
+     }
+
+     void setName(string newTitle){
+         this->title = newTitle;
+     }
+
+     FloatRect get_bounds(){
+         return sprite.getGlobalBounds();
+     }
+
+     virtual void func(RenderWindow& window,Vector2i& mousePos,
+     vector<unique_ptr<Essence>>& life_objects,
+     vector<unique_ptr<Boundary>>& unlife_objects,Player& player
+     ) = 0;
+};
+
+
+class Player : public Essence{
+public:
+   float max_size = 150,max_weight = 50,inv_size = 0,inv_weight = 0;
+   vector<Effect> effects;
+   vector<unique_ptr<Item>> inventory;
+   unique_ptr<Item> hand;
+   Clock clock2;
+
+   Player(void){}
+
+   Player(const vector<string>& img_path_list,
+          float x,float y,
+          float speed,float fps_walk,float w,float h)
+          {
+          this->fps_walk = fps_walk;
+          this->speed = speed;
+          this->position = Vector2f(x,y);
+          this->img_lists = img_path_list;
+          this->size = Vector2f(w,h);
+          }
+
+   bool appendItem(unique_ptr<Item>&& item){
+          float masse = item->masse;
+          float size = item->size;
+          float free_masse = max_weight - inv_weight;
+          float free_size = max_size - inv_size;
+          if(masse < free_masse && size < free_size){
+              inventory.push_back(move(item));
+              return true;
+          }else{
+              return false;
+          }
+      }
+
+   void draw(RenderWindow& window){
+             if (this->walk_count >= this->img_lists.size()) {
+                  this->walk_count = 0;
+             }
+
+             if(!texture.loadFromFile(this->img_lists[this->walk_count])){
+                 cerr << "Not download user img" << endl;
+             }
+
+             sprite.setTexture(texture);
+             window.draw(this->sprite);
+             // Draw Hand Object
+             if(this->hand){
+                  hand->position = this->position;
+                  Vector2f newPos = Vector2f(position.x,position.y + (size.x / 2.5));
+                  hand->set_position(newPos);
+                  if(this->is_left){
+                      hand->sprite.setScale(-1.0f,1.0f);
+
+                      Vector2f newPos = Vector2f(position.x + hand->sprite_size.x / 2,position.y + (size.x / 2.5));
+                      hand->set_position(newPos);
+                      hand->item_draw(window);
+                  }else{
+                      hand->sprite.setScale(1.0f,1.0f);
+                      hand->draw_item(window);
+                  }
+
+             }
+
+
+      }
+   void useHand(RenderWindow& window,Vector2i& mousePos,
+        vector<unique_ptr<Essence>>& life_objects,
+        vector<unique_ptr<Boundary>>& unlife_objects,Player& player){
+            if(hand){
+                 hand->func(window,mousePos,life_objects,unlife_objects,player);
+            }
+      }
+
+
+   void setM(float reg,float time,float val,float max){
+          this->regenerateM = reg;
+          this->regTimeM = time;
+          this->magic = val;
+          this->Max_magic = max;
+      }
+   void setH(float reg,float time,float val,float max){
+          this->regenerateH = reg;
+          this->regTimeH = time;
+          this->health = val;
+          this->Max_health = max;
+      }
+   void setS(float reg,float time,float val,float max){
+          this->regenerateS = reg;
+          this->regTimeS = time;
+          this->stamina = val;
+          this->Max_stamina = max;
+      }
+};
+
+class Arrow : public Item{};
+
+class Bow : public Item{};
 
 class KatanSword : public Item{
 private:
@@ -344,8 +471,33 @@ public:
    }
 
 
-   void func(RenderWindow& window,vector<unique_ptr<Essence>>& life_objects,
-             vector<Boundary>& unlife_objects){
+   void func(RenderWindow& window,Vector2i& mousePos,
+     vector<unique_ptr<Essence>>& life_objects,
+     vector<unique_ptr<Boundary>>& unlife_objects,Player& player) override
+   {
+          if(anim_count > 3) anim_count = 0;
+          string path = this->slash_pathes[anim_count];
+          if(!slash_texture.loadFromFile(path)){
+             cerr << "error animation attack" << endl;
+          }
+          slash_sprite.setTexture(slash_texture);
+          if(!player.is_left) {
+                slash_sprite.setPosition(player.getPosition().x + 50, player.getPosition().y);
+                slash_sprite.setScale(-1.0f,1.0f);
+          } else {
+              slash_sprite.setScale(1.0f,1.0f);
+              slash_sprite.setPosition(player.getPosition().x - 50, player.getPosition().y);
+             }
+
+          if(clock1.getElapsedTime().asSeconds() > 0.1){
+               anim_count++;
+
+               clock1.restart();
+          }
+
+
+          window.draw(slash_sprite);
+
 
    }
 
@@ -355,7 +507,7 @@ class Potion_health : public Item{
 public:
    vector<Effect> effects;
 
-   Potion(vector<Effect> effects,float size,float weight,string& path){
+   Potion(vector<Effect> effects,float size,float weight,string& path,float w,float h){
         this->effects = effects;
         this->size = size;
         this->masse = weight;
@@ -363,114 +515,25 @@ public:
             cerr << "Error in Potion class" << endl;
         }
         this->sprite.setTexture(texture);
+        this->sprite_size = Vector2f(w,h);
    }
 
-   void func(RenderWindow& window,Vector2i& mousePos,vector<unique_ptr<Essence>>& life_objects,vector<Boundary>& unlife_objects)
+   void func(RenderWindow& window,Vector2i& mousePos,
+     vector<unique_ptr<Essence>>& life_objects,
+     vector<unique_ptr<Boundary>>& unlife_objects,Player& player)
    {
 
    }
 };
 
-
-
-
-class Player : public Essence{
+class HealthBoost : public Effect{
 public:
-   float max_size = 150,max_weight = 50,inv_size = 0,inv_weight = 0;
-   vector<Effect> effects;
-   vector<unique_ptr<Item>> inventory;
-   unique_ptr<Item> hand;
-   Clock clock2;
+    void func(Player& player) override {
 
-
-public:
-   Player(void){}
-
-   Player(const vector<string>& img_path_list,
-          float x,float y,
-          float speed,float fps_walk,float w,float h)
-   {
-          this->fps_walk = fps_walk;
-          this->speed = speed;
-          this->position = Vector2f(x,y);
-          this->img_lists = img_path_list;
-          this->size = Vector2f(w,h);
-   }
-
-   bool appendItem(unique_ptr<Item>&& item){
-       float masse = item->masse;
-       float size = item->size;
-       float free_masse = max_weight - inv_weight;
-       float free_size = max_size - inv_size;
-       if(masse < free_masse && size < free_size){
-           inventory.push_back(move(item));
-           return true;
-       }else{
-           return false;
-       }
-   }
-
-   void draw(RenderWindow& window){
-          // Draw character
-          if (this->walk_count >= this->img_lists.size()) {
-               this->walk_count = 0;
-          }
-
-          if(!texture.loadFromFile(this->img_lists[this->walk_count])){
-              cerr << "Not download user img" << endl;
-          }
-
-          sprite.setTexture(texture);
-          window.draw(this->sprite);
-          // Draw Hand Object
-          if(this->hand){
-               hand->position = this->position;
-               Vector2f newPos = Vector2f(position.x,position.y + (size.x / 2.5));
-               hand->set_position(newPos);
-               if(this->is_left){
-                   hand->sprite.setScale(-1.0f,1.0f);
-                   hand->sprite.setScale(-(hand->sprite_size.x / hand->texture.getSize().x),
-                                           hand->sprite_size.y / hand->texture.getSize().y);
-                   Vector2f newPos = Vector2f(position.x + hand->sprite_size.x / 2,position.y + (size.x / 2.5));
-                   hand->set_position(newPos);
-                   hand->draw_item(window);
-               }else{
-                   hand->sprite.setScale((hand->sprite_size.x / hand->texture.getSize().x),hand->sprite_size.y / hand->texture.getSize().y);
-
-                   hand->draw_item(window);
-               }
-          }
-
-
-   }
-
-   void useHand(RenderWindow& window,Vector2i& mousePos,vector<unique_ptr<Essence>>& life_objects,vector<Boundary>& unlife_objects){
-         if(hand){
-              hand->func(window,mousePos,life_objects,unlife_objects);
-         }
-   }
-
-
-   void setM(float reg,float time,float val,float max){
-       this->regenerateM = reg;
-       this->regTimeM = time;
-       this->magic = val;
-       this->Max_magic = max;
-   }
-   void setH(float reg,float time,float val,float max){
-       this->regenerateH = reg;
-       this->regTimeH = time;
-       this->health = val;
-       this->Max_health = max;
-   }
-   void setS(float reg,float time,float val,float max){
-       this->regenerateS = reg;
-       this->regTimeS = time;
-       this->stamina = val;
-       this->Max_stamina = max;
-   }
-
+    }
 };
+
+
 
 class Human : public Essence{};
 
@@ -532,34 +595,37 @@ int main() {
 
     unique_ptr<KatanSword> katanaDefault = make_unique<KatanSword>(20.0,100.0,25.0,100,
                                                     path_to_img::katana_path,path_to_img::katana_slash_pathes,55.0,10.0);
+
     Vector2f posKatan = Vector2f(231.0f,150.0f);
     katanaDefault->set_position(posKatan);
+
+
     vector<unique_ptr<Item>> items_lists;
 
     items_lists.push_back(move(katanaDefault));
-    vector<Boundary> Boundaries;
+    vector<unique_ptr<Boundary>> Boundaries;
 
 // World boundary
 
-    Boundary wall(path_to_img::stone_path, world.getWidth(),50.0f,
+    unique_ptr<Boundary> wall = make_unique<Boundary>(path_to_img::stone_path, world.getWidth(),50.0f,
                                            0.0f,0.0f
                                            );
-    Boundaries.push_back(wall);
+    Boundaries.push_back(move(wall));
 
-    Boundary wall1(path_to_img::stone_path, world.getWidth(),50.0f,
+    unique_ptr<Boundary> wall1 = make_unique<Boundary>(path_to_img::stone_path, world.getWidth(),50.0f,
                                            0.0f,world.getHeight()
                                            );
-    Boundaries.push_back(wall1);
+    Boundaries.push_back(move(wall1));
 
-    Boundary wall2(path_to_img::stone_path, 50.0f,world.getHeight(),
+    unique_ptr<Boundary> wall2 = make_unique<Boundary>(path_to_img::stone_path, 50.0f,world.getHeight(),
                                            0.0f,0.0f
                                            );
-    Boundaries.push_back(wall2);
+    Boundaries.push_back(move(wall2));
 
-    Boundary wall3(path_to_img::stone_path, 50.0f,world.getHeight(),
+    unique_ptr<Boundary> wall3 = make_unique<Boundary>(path_to_img::stone_path, 50.0f,world.getHeight(),
                                            world.getWidth(),0.0f
                                            );
-    Boundaries.push_back(wall3);
+    Boundaries.push_back(move(wall3));
 // World boundary
 
     vector<unique_ptr<Essence>> Essencies;
@@ -654,6 +720,10 @@ int main() {
         player.update(Boundaries);
 
 
+        for(auto& obj : Boundaries){
+            obj->draw(window);
+
+        }
 
         if(player.health <= 0){
             game = false;
@@ -666,10 +736,6 @@ int main() {
 
         // PLAYER//
 
-        for(auto& obj : Boundaries){
-            obj.draw(window);
-
-        }
 
 
 
@@ -692,13 +758,19 @@ int main() {
                                 player.hand->sprite_size.y / 100);
                           Sprite hand_obj = player.hand->sprite;
                           hand_obj.setPosition(h_x ,h_y);
+                          hand_obj.setScale(1.0f,1.0f);
+                          hand_obj.setScale((player.hand->sprite_size.x / player.hand->texture.getSize().x),
+                                             player.hand->sprite_size.y / player.hand->texture.getSize().y);
+                          window.draw(hand_back);
+                          window.draw(hand_obj);
                           if(hand_obj.getGlobalBounds().contains(world_pos)){
                                   if (Mouse::isButtonPressed(Mouse::Left)) {
                                        player.inventory.push_back(move(player.hand));
+                                  }else if(Mouse::isButtonPressed(Mouse::Right)){
+                                       player.hand->position = player.position;
+                                       items_lists.push_back(move(player.hand));
                                   }
                           }
-                          window.draw(hand_back);
-                          window.draw(hand_obj);
 
              }else{
                   hand_back.setScale(0.3f,0.3f);
@@ -786,9 +858,7 @@ int main() {
 
         if(Mouse::isButtonPressed(Mouse::Left)){
               Vector2i mousePos = Mouse::getPosition(window);
-
-              player.useHand(window,mousePos,Essencies,Boundaries);
-
+              if(!IsOpenInventory) player.useHand(window,mousePos,Essencies,Boundaries,player);
         }
 
 
