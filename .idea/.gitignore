@@ -1,3 +1,5 @@
 # Default ignored files
 /shelf/
+/test.cpp/
+/test.exe/
 /workspace.xml
