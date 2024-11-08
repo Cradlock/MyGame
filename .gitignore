@@ -1,4 +1,8 @@
 **/test.cpp
 **/test.exe
+**/test.cpp*
+**/test.exe*
+/test.cpp/
+/test.exe/
 /.idea/
 **/.idea*
