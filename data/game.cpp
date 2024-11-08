@@ -15,44 +15,46 @@ ostream& operator<<(ostream& os, const sf::Vector2f& vec) {
 }
 
 namespace fontes{
-    string pixel_font = "fonts/pixel.ttf";
+    string pixel_font = "data/fonts/pixel.ttf";
 
 };
 namespace path_to_img{
-    string katana_path = "images/item/weapon/katana.png";
-    string invBack_path = "images/backgrounds/inventory.png";
+    string world_bg1 = "data/images/backgrounds/background1.png";
+
+
+    string katana_path = "data/images/item/weapon/katana.png";
+    string invBack_path = "data/images/backgrounds/inventory.png";
     vector<string> katana_slash_pathes = {
-                "images/item/weapon/k_slash1.png",
-                "images/item/weapon/k_slash2.png",
-                "images/item/weapon/k_slash3.png",
-                "images/item/weapon/k_slash4.png",
+                "data/images/item/weapon/k_slash1.png",
+                "data/images/item/weapon/k_slash2.png",
+                "data/images/item/weapon/k_slash3.png",
+                "data/images/item/weapon/k_slash4.png",
     };
 
-    string stone_path = "images/objects/border.png";
+    string stone_path = "data/images/objects/border.png";
 
-    string player_left = "images/player_walk_left/1.png";
-    string player_left1 = "images/player_walk_left/2.png";
-    string player_left2 = "images/player_walk_left/3.png";
-    string player_left3 = "images/player_walk_left/4.png";
+    string player_left = "data/images/player_walk_left/1.png";
+    string player_left1 = "data/images/player_walk_left/2.png";
+    string player_left2 = "data/images/player_walk_left/3.png";
+    string player_left3 = "data/images/player_walk_left/4.png";
 
     vector<string> player_lefts = {player_left3,player_left2,
                                  player_left1,player_left};
 
-    string player_r  = "images/player_walk_right/1.png";
-    string player_r1 = "images/player_walk_right/2.png";
-    string player_r2 = "images/player_walk_right/3.png";
-    string player_r3 = "images/player_walk_right/4.png";
+    string player_r  = "data/images/player_walk_right/1.png";
+    string player_r1 = "data/images/player_walk_right/2.png";
+    string player_r2 = "data/images/player_walk_right/3.png";
+    string player_r3 = "data/images/player_walk_right/4.png";
 
     vector<string> player_rights = {player_r3,player_r2,
                                  player_r1,player_r};
 
-    string world_bg1 = "images/backgrounds/background1.png";
 };
 
 static int WIDTH = (VideoMode::getDesktopMode().width * 70) / 100;
 static int HEIGHT = (VideoMode::getDesktopMode().height * 80) / 100 ;
 static float NORMAL_ZOOM =  WIDTH / HEIGHT - 0.65f; // 0.35
-static float NORMAL_SPEED = NORMAL_ZOOM / 10;
+static float NORMAL_SPEED = NORMAL_ZOOM / 7;
 
 // Classes
 
@@ -638,7 +640,7 @@ int main() {
 
     Font pixel_font;
 
-    if (!pixel_font.loadFromFile("fonts/pixel.ttf")) {
+    if (!pixel_font.loadFromFile(fontes::pixel_font)) {
          cerr << "Error loading font" << endl;
     }
     Text pixel_text;
