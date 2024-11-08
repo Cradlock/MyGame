@@ -11,4 +11,6 @@
 ## 4) Игра еще не доработана
 
 # Скриншоты
-# ![Первое фото](data\images\screens\scr.png)
+# ![Первый скриншот](data/images/screens/scr.png)
+#
+# ![Второй скриншот](data/images/screens/scr1.png)
