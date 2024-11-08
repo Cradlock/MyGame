@@ -49,13 +49,12 @@ namespace path_to_img{
     string world_bg1 = "images/backgrounds/background1.png";
 };
 
-#define WIDTH 1500
-#define HEIGHT 1000
-#define NORMAL_ZOOM 0.35f
+static int WIDTH = (VideoMode::getDesktopMode().width * 70) / 100;
+static int HEIGHT = (VideoMode::getDesktopMode().height * 80) / 100 ;
+static float NORMAL_ZOOM =  WIDTH / HEIGHT - 0.65f; // 0.35
+static float NORMAL_SPEED = NORMAL_ZOOM / 10;
 
-
-
-
+// Classes
 
 class Boundary{
 private:
@@ -486,7 +485,7 @@ public:
                 slash_sprite.setScale(-1.0f,1.0f);
           } else {
               slash_sprite.setScale(1.0f,1.0f);
-              slash_sprite.setPosition(player.getPosition().x - 50, player.getPosition().y);
+              slash_sprite.setPosition(player.getPosition().x - 25, player.getPosition().y);
              }
 
           if(clock1.getElapsedTime().asSeconds() > 0.1){
@@ -571,19 +570,21 @@ public:
 };
 
 int main() {
+
     RenderWindow window(VideoMode(WIDTH,HEIGHT),"Work");
 
     World world(path_to_img::world_bg1);
 
 
-    Player player(path_to_img::player_lefts,120.0f,40.0f,0.05f,0.1f,40.0f,40.0f);
+    Player player(path_to_img::player_lefts,120.0f,40.0f,
+                NORMAL_SPEED,0.1f,40.0f,40.0f);
 
 
     //          reg time val max
     player.setH(1.0,0.1,1.2,100.0);
     player.setS(1.0,0.1,1.2,100.0);
     player.setM(1.0,0.1,1.2,100.0);
-
+    // Bars
     RectangleShape healthBar(Vector2f(80,5));
     healthBar.setFillColor(Color::Red);
 
@@ -836,15 +837,15 @@ int main() {
         magicBar.setSize(Vector2f((80 * ((player.magic * 100) / player.Max_magic)) / 100,10));
         staminaBar.setSize(Vector2f((80 * ((player.stamina * 100) / player.Max_stamina)) / 100,10));
 
-        Vector2f healthBarOffset(-220, -170);
+        Vector2f healthBarOffset(-220, -(HEIGHT / 7.5));
 
         healthBar.setPosition(player.getPosition() + healthBarOffset);
 
-        Vector2f staminaBarOffset(-25, -170);
+        Vector2f staminaBarOffset(-25, -(HEIGHT / 7.5));
 
         staminaBar.setPosition(player.getPosition() + staminaBarOffset);
 
-        Vector2f magicBarOffset(170, -170);
+        Vector2f magicBarOffset(170, -(HEIGHT / 7.5));
 
         magicBar.setPosition(player.getPosition() + magicBarOffset);
         // Bars
