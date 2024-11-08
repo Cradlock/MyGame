@@ -9,4 +9,4 @@
 ## 3)Могут быть Баги 
 #
 # Скриншоты
-# ![Первое фото](images/scr.png)
+# ![Первое фото](data\images\screens\scr.png)
