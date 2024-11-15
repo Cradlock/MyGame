@@ -49,12 +49,14 @@ namespace path_to_img{
     vector<string> player_rights = {player_r3,player_r2,
                                  player_r1,player_r};
 
+    string health_potion_icon = "images/item/potion/health_potion.png";
+
 };
 
 static int WIDTH = (VideoMode::getDesktopMode().width * 70) / 100;
 static int HEIGHT = (VideoMode::getDesktopMode().height * 80) / 100 ;
 static float NORMAL_ZOOM =  WIDTH / HEIGHT - 0.65f; // 0.35
-static float NORMAL_SPEED = NORMAL_ZOOM / 8;
+static float NORMAL_SPEED = NORMAL_ZOOM / 6;
 
 // Classes
 
@@ -294,8 +296,9 @@ public:
 
     Clock clock;
     Clock clock1;
+    Clock clock2;
 
-    virtual void func(Player& player){
+    virtual void func(RenderWindow& screen,Player& player){
 
     }
 
@@ -504,7 +507,7 @@ public:
 
 };
 
-class Potion_health : public Item{
+class Potion : public Item{
 public:
    vector<Effect> effects;
 
@@ -523,14 +526,27 @@ public:
      vector<unique_ptr<Essence>>& life_objects,
      vector<unique_ptr<Boundary>>& unlife_objects,Player& player)
    {
-
+      for(auto& x : this->effects){
+          x.func(window,player);
+      }
    }
 };
 
 class HealthBoost : public Effect{
 public:
-    void func(Player& player) override {
-
+    HealthBoost(String icon,float duration,float delay,float impact){
+        this->title = "Регенерация";
+        this->icon_path = icon;
+        if(!texture.loadFromFile(icon_path)){
+           cerr << "Error in load Health boost icon path" << endl;
+        }
+        this->sprite.setTexture(texture);
+        this->duration = duration;
+        this->delay = delay;
+        this->impact = impact;
+    }
+    void func(RenderWindow& screen,Player& player) override {
+        cout << "Hello world! (Health Boost)" << endl;
     }
 };
 
@@ -576,7 +592,7 @@ int main() {
     RenderWindow window(VideoMode(WIDTH,HEIGHT),"Work");
 
     World world(path_to_img::world_bg1);
-
+    // Player
 
     Player player(path_to_img::player_lefts,120.0f,40.0f,
                 NORMAL_SPEED,0.1f,40.0f,40.0f);
@@ -586,6 +602,7 @@ int main() {
     player.setH(1.0,0.1,1.2,100.0);
     player.setS(1.0,0.1,1.2,100.0);
     player.setM(1.0,0.1,1.2,100.0);
+
     // Bars
     RectangleShape healthBar(Vector2f(80,5));
     healthBar.setFillColor(Color::Red);
@@ -598,15 +615,27 @@ int main() {
 
     unique_ptr<KatanSword> katanaDefault = make_unique<KatanSword>(20.0,100.0,25.0,100,
                                                     path_to_img::katana_path,path_to_img::katana_slash_pathes,55.0,10.0);
-
     Vector2f posKatan = Vector2f(231.0f,150.0f);
     katanaDefault->set_position(posKatan);
+
+    HealthBoost healthEffect(path_to_img::health_potion_icon,2,1,2);
+
+    vector<Effect> effects;
+    effects.push_back(healthEffect);
+    unique_ptr<Potion> potion1 = make_unique<Potion>(effects,25.0,0.5,path_to_img::health_potion_icon,15.0,15.0
+    );
+    Vector2f posPotion1 = Vector2f(150.0f,50.0f);
+    potion1->set_position(posPotion1);
 
 
     vector<unique_ptr<Item>> items_lists;
 
+    items_lists.push_back(move(potion1));
     items_lists.push_back(move(katanaDefault));
+
     vector<unique_ptr<Boundary>> Boundaries;
+
+
 
 // World boundary
 
@@ -689,6 +718,11 @@ int main() {
         world.draw(window);
 
 
+        for(auto& obj : Boundaries){
+            obj->draw(window);
+
+        }
+
         for(auto& obj : items_lists){
             obj->draw_item(window);
             if(player.getBounds().intersects(obj->get_bounds())){
@@ -723,10 +757,7 @@ int main() {
         player.update(Boundaries);
 
 
-        for(auto& obj : Boundaries){
-            obj->draw(window);
 
-        }
 
         if(player.health <= 0){
             game = false;
