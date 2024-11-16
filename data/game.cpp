@@ -58,6 +58,7 @@ static int HEIGHT = (VideoMode::getDesktopMode().height * 80) / 100 ;
 static float NORMAL_ZOOM =  WIDTH / HEIGHT - 0.65f; // 0.35
 static float NORMAL_SPEED = NORMAL_ZOOM / 6;
 
+
 // Classes
 
 class Boundary{
@@ -730,7 +731,6 @@ int main() {
                  pixel_text.setPosition(player.position.x, player.position.y - player.size.y / 2);
 
                  if(Keyboard::isKeyPressed(Keyboard::E)){
-
                       if(player.appendItem(move(obj))){
                             pixel_text.setString("Success append item");
                             pixel_text.setPosition(player.position.x, player.position.y - player.size.y / 2);
@@ -740,11 +740,13 @@ int main() {
                             if(it != items_lists.end()){
                                  items_lists.erase(it);
                             }
+                            break;
                       } else {
                            pixel_text.setFillColor(Color::Red);
                            pixel_text.setString("not enough space or strength");
                            pixel_text.setPosition(player.position.x, player.position.y - player.size.y / 2);
                       }
+
                  }
 
                  window.draw(pixel_text);
@@ -851,8 +853,14 @@ int main() {
                                    player.inventory.erase(player.inventory.begin() + i);
                                    break;
                                }else if(Mouse::isButtonPressed(Mouse::Left)){
-                                   player.hand = move(player.inventory[i]);
-                                   player.inventory.erase(player.inventory.begin() + i);
+                                   if(player.hand){
+                                      player.inventory.push_back(move(player.hand));
+                                      player.hand = move(player.inventory[i]);
+                                      player.inventory.erase(player.inventory.begin() + i);
+                                   }else{
+                                      player.hand = move(player.inventory[i]);
+                                      player.inventory.erase(player.inventory.begin() + i);
+                                   }
                                    break;
                                }
                            }
@@ -870,15 +878,15 @@ int main() {
         magicBar.setSize(Vector2f((80 * ((player.magic * 100) / player.Max_magic)) / 100,10));
         staminaBar.setSize(Vector2f((80 * ((player.stamina * 100) / player.Max_stamina)) / 100,10));
 
-        Vector2f healthBarOffset(-220, -(HEIGHT / 7.5));
+        Vector2f healthBarOffset((WIDTH / -6.5), -(HEIGHT / 7.5));
 
         healthBar.setPosition(player.getPosition() + healthBarOffset);
 
-        Vector2f staminaBarOffset(-25, -(HEIGHT / 7.5));
-
+        Vector2f staminaBarOffset((WIDTH / -23), -(HEIGHT / 7.5));
+        
         staminaBar.setPosition(player.getPosition() + staminaBarOffset);
 
-        Vector2f magicBarOffset(170, -(HEIGHT / 7.5));
+        Vector2f magicBarOffset(WIDTH / 13, -(HEIGHT / 7.5));
 
         magicBar.setPosition(player.getPosition() + magicBarOffset);
         // Bars
