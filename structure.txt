@@ -1,0 +1,633 @@
+        0                        2                                                     2                                                  3                                     
+    LIFE Ojbects                Item                                                 Effect                                         Unlife Objects                                            
+        |                         |                                                       |                                               |            
+    -----------                   |                                                       ?                                               |      
+    |         |             Thing-|                                                       |                                               |        Top
+    |         |             |     |                                                       |                                              / \      /   /\                                                     
+    |         |             |     |                                                       ?                                             /   \    /    ||    
+Player        NPC      Book-|     |                                  Active(Condition)           Existance(Condition)                  /    Block     Item objects   
+              |             |     |                                        |                              |                           /       |  \    ||       
+              |      Potion-|     |-Equipment--|                           |-getInfluence                 |-InTime                   /        |   \   \/   
+              |             |     |            |-helmet         IfHaveTime-|              IfHaveInventory-|                         /         |    Average  
+              | Instruments-|     |   cuiarass-|                           |                              |-Passive            PartWorld      |              
+              |             |     |            |-leggings                                                 |                                Bottom         
+              |    Artefact-|     |     gloves-|                                                                                                             
+              |             |     |            |-boot                                                                                                       
+              |       Money-|     |     Bracer-|                           
+              |             |     |
+              |        Food-|     |
+              |                   |
+              |                   |-Accessory---| 
+    ----------------------        |             |-amulet
+    |                    |        |       Cloak-|
+    |                    |        |             |-ring
+Bosses               default_npc  |      Armlet-|
+                         |        |
+                   Quest-|        |-weapon------------
+                         |        |                  |
+              Additional-|                           |
+                         |                        ----------------------------------------------
+                   Other-|                      Near               Distant                    Other
+                                                   |-Sword               |-Bow                     |
+                                               Axe-|            Throwing-|                         |-stuff  
+                                                   |-Hammer              |-Gun                     |
+                                             Knife-|            Crossbow-|                         |-Device
+                                                   |-Spear               |-boomerang               |
+                                            Scythe-|                     |                         |-Other
+                                                   |-Fist                |                         |
+                                                                         v  
+                                                               Projectile|-> arrow/bolt/...
+
+
+
+
+---------------------------------------------------------------------------------------------------
+
+Spells 
+|
+|
+|---- Projectile
+|
+|
+|---- Self
+|
+|
+|
+|---- Summon ----  Spawner  ----  Essence
+|
+|
+|
+|---- Domain
+|
+|
+|
+|---- Other
+|
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+?isGame               cycle game 
+    \                /
+      game->load game  
+     /               \
+    /                 menu
+   /
+Menu --- buttons(new_game,saves,setting,exit)
+    \
+     \ ---- settings -------- buttons(exit)
+     /\
+    /  \
+   /    \
+saves    \
+          \
+         exit
+
+
+
+
+
+Game cycle
+
+if isGame;
+
+----------------------------------------------------------------->
+
+(Lambda Functions (save functions)) -> massive_lambda_functions
+
+
+
+------------------------------------------------------
+list<class Temp> temp
+
+class Spell/Projectile
+-> on Active -> temp + obj class Temp 
+                      \
+                       \
+                        \ ------  create Temp obj ->  Class Spell -> (start_size,start_pos,Influence,images,effects, 
+                                                                      lambda update,lambda onCollision,stock) -> Class Temp
+
+for(auto i : temp)
+   i.update()       ---> --->   [](this){}
+
+
+--------------------------------------------------------
+
+Effect conditions of activate --------- get Influence
+                            \
+                             \
+                              \
+                               If have Time
+
+Effect conditions of existance --------- in Time(have timer)
+           |                \
+           |                 \
+           |                  \
+           |                   \
+           |                    \
+        If have Item           Passive
+
+--------------------------------------------------
+
+Item ->  
+   func ---- ?  Use
+   /    \     
+  |      \     
+  |       \     
+  |        \ 
+  ?         ?
+InHand      in Invetnory 
+
+
+--------------------------------------------------------
+Take damage logic
+
+Influence obj   
+
+Example weapon sword(Physic,Bio,Soul,Magic,Energy)
+  [&](this,send_d,receive_d){
+     for(auto ef : essence.get_influence_effects_existing()){
+         ef.func(send_d,receive_d);
+     }
+     
+     Magic Damage{
+          Physic d{
+
+          }
+          Energy d{
+
+          }
+          Biology d{
+
+          }
+          Soul d{
+
+          } 
+     }
+     
+     Energy Damage{
+            
+     }
+
+
+     Physic Damage{
+
+
+     }
+
+     Biology Damage{
+
+
+     }
+     
+     Soul Damage{
+
+     }
+
+           send Effects/Item/.....
+     Other------------------------{}
+
+  }
+
+--------------------------------------------------------------------------
+Structure save objects(Essence,Effect,Item,Location,)
+
+lambda functions -> save " *_LF.h"
+
+                     *
+    ---------------------------------------------------------
+    |            |               |             |            |
+    |            |               |             |            |
+    |            |               |             |            |
+    |            |               |             |            |
+  Item        Effect           Spell          World       Essence                    
+
+
+--------------------------------------------------------------------------
+Logic generate World:
+
+ObjectsTextures = {Void 0 
+Ground 2 Gravel 2 Grass 3 Stone 4 Cobblestone 5 StoneTile 6 Mushroom 7 OvergrownGrass 8 
+OvergrownMushroom 9 ShallowWater  10 MediumWater  11 DeepWater 12  Dirt 13   Swamp 14    
+Lava 15 Sand 16}
+
+
+massive = {
+  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11}
+  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11}
+  {11,11,11,11,11,11,11,11,11,11,11,11,11,16,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11}
+  {11,11,11,11,11,11,11,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,11,11,11,11,11,11,11,11,11,11,11,11}
+  {11,11,11,11,11,16,16,16,16,16,16,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,16,16,16,16,16,16,16,11,11,11,11}
+  {11,11,11,16,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11,11,11}
+  {11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11,11}
+  {11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11}
+  {11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,11}
+  {11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,11}
+  {11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,11}
+  {11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,11}
+  {11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,11}
+  {11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,11}
+  {11,16,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11}
+  {11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,11,11}
+  {11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11,11}
+  {11,11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11,11}
+  {11,11,11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11,11,11}
+  {11,11,11,11,11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,16,11,11,11,11}
+  {11,11,11,11,11,16,16,16,16,16,16,16,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,16,16,16,16,16,16,11,11,11,11,11,11}
+  {11,11,11,11,11,11,11,11,11,16,16,16,16,16,16,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,16,16,16,16,11,11,11,11,11,11,11,11,11}
+  {11,11,11,11,11,11,11,11,11,11,11,11,11,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,11,11,11,11,11,11,11,11,11, 2,11,11,11,11}
+  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,11,11,11,11,11,11,11,11, 2, 6, 2, 2,11,11,11}
+  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11, 2, 6, 6, 2, 2,11,11,11}
+  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11, 2, 5, 2, 2, 2, 2,11,11}
+  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11, 6, 6, 2, 2,11,11,11}
+  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11, 6, 7,11,11,11,11}
+  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11}
+  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11}
+}
+
+blocks_massive = {}
+
+strt_x = 0
+strt_y = 0
+for(int i = 0; i < massive.size();++i){
+   row = {}
+   for(int j = 0;j < massive[i].size();++i){
+        int idx = massive[i][j]
+        PartWorld obj = obj( ... ,get(Objects,idx));
+        obj.x = strt_x;
+        obj.y = strt_y
+        row.push_back(obj);
+        strt_x += 50;
+   }
+   strt_y += 50;
+   blocks_massive.push_back(row);
+   row.clear();
+}
+
+
+In Game cycle
+for(auto& o : blocks_massive){
+  o.draw()
+  .....Logic onCollision with Essence
+}
+
+
+
+---------------------------------------------------------------------------
+Logic Save Objects
+
+
+              Object --------- simple data
+                  |
+                  |                       lambda_func ( id function )
+                  |                       /
+                  |                      /
+                complex data(link to ...) 
+                                         \
+                                          \
+                                          texture  ( string , shared_ptr<Texture> )
+
+
+
+
+
+---------------------------------------------------------------------------------
+Structure save images
+                          
+                          images
+      ---------------------------------------------------------------------------------------
+      |                |                 |                  |               |               |
+    Effect           Object            Item             Essence             Spell           System --------- Other
+      |                |                 |                  |           --------- -\               \
+      |             -----------          |                  |           |        |  \               \
+-------------       |         |          |                  |        circles     | projectiles       \  
+|           |     Block     PartWorld    |     Player--------------              |                   Backgrounds
+Additional  |       |                    |          |             |           summon_guards
+            |       |-Top                |          |            NPC 
+          icons     |                    |        Bosses       ----------
+                    |                    |                    /    |     \
+            Average-|                    |                   /     |      \
+                    |                    |                  /      |       \
+                    |-Bottom             |              Quest    Other    Additional
+                                         |
+                                         |
+                     -----------------------------------------------------accessory
+                     |                   |                     |           
+                  Thing               Weapon                Equipment   
+
+
+
+
+--------------------------------------------------------------------------------------------------------------
+
+?Play 
+   \
+    \
+     \
+      \
+       \
+        -----> If(Have File in saves) select  2 save world -generate else ( create new object world )  -generate
+
+?setting
+    \
+     \  
+      \
+       \
+        \
+         \
+          ------>  Open setting menu ()
+
+
+?load world  
+     \
+      \
+       \
+        \
+         \
+          \
+           \
+            \
+             ------> Open list worlds {
+                  if select world->
+                      game cycle with world Object
+             } 
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------
+Load World logic
+
+
+
+generate cycle -
+                  \
+                   \
+                    \-> generate map (save textures in unordered_map )
+                     \
+                      \->generate objects (save textures in unordered_map )
+
+
+
+
+
+
+
+Top storngest:
+   0:LINE
+
+   1: Outer gods(administrator,...) | creature in CHaOs
+   2: rankers->(rei - niko)
+   3: administrator helper/support/
+   4: Viewer( outer gods strong universe)
+   5: universe strongest creature
+   6: Player
+   7: Sunny
+   
+   -1:LINE
+
+
+
+Stats for rankers{
+  Niko{
+    all stats 30
+    equipment(time blade)
+    skills()
+  }
+  Rei{
+    all stats 87+-
+    equipment(Blade )
+    skills(Dimension slash, Domain fight , break limits)
+  }
+  Lyu{
+    all stats 60+-
+    equipment()
+    skills(Magic++, Sword++)
+  }
+  Sunny{
+    all stats: 21+-
+    equipment(monastery,ancient organic,scriptire)
+    skills(Magic++++, BioContorl++++, Domain Chapel, Access to CHaOs+-(but get insanity), Control Mind another creatures)
+  }
+
+
+}
+
+
+
+Stats for{
+    Human:
+      all 30
+    Viewers:
+       all 50
+    Support:
+       all 80
+    Administrator:
+       all -100+
+    Creature in CHaOs:
+       all 10+-250
+    LINE:
+       all| -1/12
+}
+
+
+
+
+
+
+
+
+
+
+Plot 
+
+InTOwer:
+  essences {
+      ranker{
+           level:2
+           name : "Луи"
+           outside : 10/10 beatifull "Hair Black - Red eyes - skin white - (big fat) * 3 dick - height 186 - weight 89 kg"
+           family->past : Mom Daddy 2 brothers,
+           PLace : village.
+
+           individual quality : {
+               Not Emotion too small Emotion,
+               
+               Best memory (Photographics memory) +-
+
+
+           } 
+
+           Events{
+              ?age 18[
+                  He leave the home. In tryed look for adventure, 
+              ]
+              ?LearnMagic[
+                 The best memory -> go to adventure
+              ]   
+              go to adventure{
+                 In guild: good result
+                 Will has command-> Womens( 2 wisard attack , 1 healer )
+                 Skills { swordsman <> wizard } 
+
+              }
+
+              ?healer </-\> this{
+                   this get pleasure 
+                   individual quality + lust(++)
+                   individual quality + walked and </-\>(++)
+                   
+              }  
+              ?View(after 2 year) princess country Caruella{
+                    Aim + become strongest
+                    Learn deep magic 
+                    after 5 months [become strongest archwizard]
+                    
+              }
+
+              ?after become archwizard{
+                  this </-\> princess
+                  after(1 week) this throw princess
+                  aim + </-\> nobles
+              }
+
+              ?after 5+5 years{
+                 this </-\> all nobles(in country)
+                 travelled.
+              }
+
+              30 years;
+              ?after 5 year{
+                 become senior archwizard
+                 individual quality + this not emotion(++) return
+              }
+              
+              ?after not emotion(++){
+                all method orgy Use
+                individual quality + obsession alchocol
+                want die
+                         \
+                          \
+                          go "Time-dragon"
+                               \
+                               this win
+                               |
+                               Time-dragon make he curse
+                               this individual quality + curse(Forever young) 
+              }
+              again travelled
+              
+              thread1?in FALL{
+                thread1 this feel fear 
+                self.curse(short life(1 year))
+                after year this lost memory NOT DIE 
+                
+                ?Be strong enemy{
+                  self.curse -> this True power
+                }
+              
+                his get Happy
+              }
+            ??? year
+              ?after ??? years{
+                  Become strongest
+                  
+              }
+           }
+      }
+
+      npc(boss){
+          level:8
+          name:"Sunny /full Suntii Orlem"
+          outside:" blach long hair , brown eye , dark-skinned "
+          family->past:"Father -name Gregory -prf butcher| Mother -name Lana -prf farmer( died after born sunny) | Brother -name Kaus -prf knight"
+
+          individual quality{
+              favorite color RED,
+              favorite eat meat,
+              bouts pshychopathy,insanity
+              deformed Emotion and mind-logic
+              purposeful 
+          }
+
+          Events{
+             ?born{
+               died mother -after> Father start drink and flog sunny 
+             }
+             ?4 age{
+               this start working in farm (supprot father)
+             }
+             ?5 age{
+               this liked meat
+             }
+             ?6 age{
+               this view first death human -> emotion and mind deformed
+             }
+
+             ?8 age (winter in village and sick this father){
+               this first act of cannibalizm (this eat neighbors child)  for  this and this father(don't know)
+               this second act of cannibalizm (this eat neighbors child)  for  this and this father(don't know)
+               this third act of cannibalizm (this eat neighbors )  for  this and this father(don't know)
+               this fourh act of cannibalizm (this eat buyer )  for  this and this father(don't know)
+               this fifth act of cannibalizm (this eat guard )  for  this and this father(don't know)
+               ...
+               this twenty fifth act of cannibalizm (this eat visitor from city )  for  this and this father( know){
+                    all village know IT -> Try kill this and this father | father lost mind 
+
+                    this run away from village -> 
+               } 
+
+             }
+             ?8 
+          }
+
+      }
+
+      
+  } 
+  
+
+  level ? {
+    boss:creature i CHaOs - Lap Las level 40.6
+    boss previos: girl -name Lucia fon Ashcroft -outer "height 172cm blonde 10/10 " -boyfriend { -name "" -outer "" } individual quality{ after apocalypse  } -status rich -parents ???
+    events{
+        ?2025|02|12{
+          apocalypse (???)
+          after last sirvival boss previos;
+          Boss deal at boss previos->
+
+        }
+        ?retry time{
+          boss previos become 
+          + window status
+          + ability max human
+          + have time to apocalypse
+          Condition ability + Is create negative emotion  +add time to apocalypse 
+        }
+
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
