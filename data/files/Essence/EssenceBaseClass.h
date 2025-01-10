@@ -17,7 +17,7 @@ struct Resistance{
 
     Resistance();
 
-    Resistance(Magic mag,Physic phy,Energy ene,Bio immu,float pshyc,float soul){} 
+    Resistance(Magic mag,Physic phy,Energy ene,Bio immu,float pshyc,float soul);
 };
 
 struct Property{
@@ -25,12 +25,7 @@ struct Property{
 
     Property();
 
-    Property(float v,float c,float m,float t){
-        this->value = v;
-        this->count = c;
-        this->max = m;
-        this->time = t;
-    };
+    Property(float v,float c,float m,float t);
 };
 
 class Essence : public Base{

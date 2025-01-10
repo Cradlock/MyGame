@@ -13,14 +13,15 @@ float randint(float start,float end){
     return dis(gen);
 }
 
-void generate(unordered_map<string , Texture>& textures,vector<PartWorld>& partes,vector<Object>& objects_top,vector<Object>& objects_bottom,World& w){
+void generate(unordered_map<string , Texture>& textures,vector<PartWorld>& partes,vector<Object>& objects_top,vector<Object>& objects_bottom,
+              World& w){
     float px = 0;
     float py = 0;
 
     random_device rd;
     mt19937 gen(rd());
 
-    for(auto& i : w.map){
+    for(auto& i : w.map[0]){
         for(auto& x : i){
           int n = x;
           string key = path_to_img::PartWorld::blockes[n];
@@ -46,7 +47,7 @@ void generate(unordered_map<string , Texture>& textures,vector<PartWorld>& parte
 
     px = 0;
     py = 0;
-    for(auto& i : w.mapObj){
+    for(auto& i : w.map[1]){
        for(auto& n : i){
           if(n != 0){
             for(int& idx : Global_Objects_list[n].images_numbers){
@@ -156,7 +157,7 @@ int main() {
         
         if(isGame){
             if(path_to_save == "new"){
-               World w1("Episode 0",InTower::level_zero,InTower::level_zero_objects);  
+               World w1("Episode 0",InTower::All_Maps[1]);  
                
                if(IsNotGenerate){
                     generate(textures,partes,objects_top,objects_bottom,w1);

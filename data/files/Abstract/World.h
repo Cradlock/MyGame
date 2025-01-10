@@ -11,14 +11,14 @@ class World{
 public:
    unsigned long long int width,height;
    String title;
-   matrixMap map;
+   vector<matrixMap> map;
    matrixMap mapObj;
    vector<PartWorld> world_objects;
    unordered_map<string , function<void()> > ConditionsWorld;   
 
    World();
 
-   World(String title,matrixMap map,matrixMap objects);
+   World(String title,vector<matrixMap> map);
 
    void generate(unordered_map<string,Texture>& txs);
 

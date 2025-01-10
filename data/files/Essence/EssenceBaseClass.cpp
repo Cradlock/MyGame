@@ -1,7 +1,12 @@
 #include "EssenceBaseClass.h"
 
+Resistance::Resistance() : magic(Magic()),energy(Energy()),immunity(Bio()),psycho(0),soul(0)  {};
 
+Resistance::Resistance(Magic mag,Physic phy,Energy ene,Bio immu,float pshyc,float soul) : magic(mag),energy(ene),immunity(immu),psycho(pshyc),soul(soul) {};
 
+Property::Property() : value(0),count(0),max(0),time(0) {};
+
+Property::Property(float v,float c,float m,float t) : value(v),count(c),max(m),time(t) {};
 
 Essence::Essence(int pk,string name,string description,string group_name,
            int sight,int hearing,

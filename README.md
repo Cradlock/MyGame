@@ -19,11 +19,7 @@
 
 # ![](data/images/System/Scr.png)
 
-# Там есть двумерные массивы 
-
-# ![](data/images/System/Scr01.png)
-
-# в такой форме
+# в файле data->files->locations.cpp там я все обьяснил
 
 
 

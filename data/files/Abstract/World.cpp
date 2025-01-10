@@ -3,9 +3,8 @@
 
 
 
-World::World(String title,matrixMap map,matrixMap objects){
+World::World(String title,vector<matrixMap> map){
     this->title = title;
     this->map = map;
-    this->mapObj = objects;
 };
 
