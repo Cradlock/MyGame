@@ -15,28 +15,8 @@
 
 
 
-# Карту делай тут
-
-# ![](data/images/System/Scr.png)
-
-# в файле data->files->locations.cpp там я все обьяснил
-
-
-
-
-
-
 
             
-
-
-
-
-
-
-
-
-
 
 
 
