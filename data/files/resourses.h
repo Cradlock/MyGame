@@ -2,8 +2,8 @@
 #define RESOURSES_H
 
 
-#include "constants.h"
 #include "Abstract/Influence.h"
+#include "constants.h"
 
 using namespace std;
 
@@ -30,25 +30,12 @@ namespace path_to_img {
    extern string bg2;
    extern string bg3;
 
-   namespace Weapons{
-        
-   }
+   
 
-   namespace Items{
 
-   }
+   extern unordered_map<int,string> Player_images;
 
-   namespace Equipment{
-
-   }
-
-   namespace Essence{
-
-   }
-
-   namespace Spells{
-
-   }
+   extern unordered_map<int,string> Essence_images;
 
    extern unordered_map<int,string> Objects;
 

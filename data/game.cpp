@@ -21,6 +21,15 @@ void generate(unordered_map<string , Texture>& textures,vector<PartWorld>& parte
     random_device rd;
     mt19937 gen(rd());
 
+    for(auto& n : w.player.images_numbers){
+            string key = path_to_img::Player_images[n];
+            if(textures.find(key) == textures.end()){
+                Texture t1;
+                t1.loadFromFile(key);
+                textures[key] = t1;
+            }
+        }
+
     for(auto& i : w.map[0]){
         for(auto& x : i){
           int n = x;
@@ -47,6 +56,7 @@ void generate(unordered_map<string , Texture>& textures,vector<PartWorld>& parte
 
     px = 0;
     py = 0;
+
     for(auto& i : w.map[1]){
        for(auto& n : i){
           if(n != 0){
@@ -89,23 +99,18 @@ void generate(unordered_map<string , Texture>& textures,vector<PartWorld>& parte
        py += standart_size;
        px = 0;
     }
+    
 
-}
-
-
-void moveCamera(Sprite& player){
-    if (Keyboard::isKeyPressed(Keyboard::W)) {
-            player.move(0, -1);  // Двигаем персонажа вверх
+    for(auto& i : w.essences){
+        for(auto& n : i.images_numbers){
+        string key = path_to_img::Essence_images[n];
+            if(textures.find(key) == textures.end()){
+                Texture t1;
+                t1.loadFromFile(key);
+                textures[key] = t1;
+            }
         }
-        if (Keyboard::isKeyPressed(Keyboard::S)) {
-            player.move(0, 1);  // Двигаем персонажа вниз
-        }
-        if (Keyboard::isKeyPressed(Keyboard::A)) {
-            player.move(-1, 0);  // Двигаем персонажа влево
-        }
-        if (Keyboard::isKeyPressed(Keyboard::D)) {
-            player.move(1, 0);  // Двигаем персонажа вправо
-        }
+    }
 }
 
 int main() {
@@ -116,7 +121,8 @@ int main() {
     string path_to_save;
     int page = 0;
     
-
+    
+    World world;
     Texture background_texture;
     Sprite background_sprite;
 
@@ -139,7 +145,6 @@ int main() {
     Sprite cObject;
     cObject.setPosition(0,0); 
     View camer{FloatRect(0, 0, 800, 600)};
-    camer.setCenter(cObject.getPosition());
     // camer.zoom(NORMAL_ZOOM);
 
     
@@ -156,13 +161,16 @@ int main() {
         window.clear();
         
         if(isGame){
-            if(path_to_save == "new"){
-               World w1("Episode 0",InTower::All_Maps[1]);  
+            if(path_to_save == "new"){  
                
                if(IsNotGenerate){
-                    generate(textures,partes,objects_top,objects_bottom,w1);
-                    IsNotGenerate = false;
+                    world = World{"Episode 0",1,{  }};
+                    world.player = PLAYER;
+                    generate(textures,partes,objects_top,objects_bottom,world);
+                    IsNotGenerate = false;                    
                } 
+
+               
 
                 for(auto& p : partes){
                   window.draw(p.spr);                 
@@ -172,12 +180,18 @@ int main() {
                     window.draw(obj.spr);
                 }
 
-
                 //Essences and items - start
-
-
-
-
+                
+                
+                for(auto& i : world.essences){
+                    i.spr.setTexture(textures[ path_to_img::Player_images[ i.images_numbers[i.counter] ] ]);
+                    setSize(i.spr,i.width,i.height);
+                    i.behaivor(window);    
+                }                       
+                                       
+                world.player.spr.setTexture(textures[ path_to_img::Player_images[ world.player.images_numbers[world.player.counter] ] ]);
+                setSize(world.player.spr,world.player.width,world.player.height);
+                world.player.behaivor(window);
 
                 //Essences and items - end
 
@@ -186,9 +200,9 @@ int main() {
                     window.draw(obj.spr);
                 }
                 
-                moveCamera(cObject);
 
-                camer.setCenter(cObject.getPosition());
+                camer.setCenter(world.player.spr.getPosition());
+                
                 window.draw(cObject);
             
                 window.setView(camer);

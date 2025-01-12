@@ -30,6 +30,7 @@
 
 #define Tree 1
 
+
 class Object : public Base{
 public:
     float endurance;

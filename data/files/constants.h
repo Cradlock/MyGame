@@ -7,6 +7,7 @@
 #include <memory>
 #include <functional>
 #include <fstream>
+#include <sstream>
 #include <cstdlib>
 #include <ctime>
 #include <vector>

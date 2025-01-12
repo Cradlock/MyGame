@@ -9,19 +9,14 @@
 
 using namespace std;
 
+extern string base;
 
-namespace InTower{
-
-   extern unordered_map<int,vector<matrixMap>> All_Maps;
- 
-};
-
+namespace Maps_pathes{
+   extern unordered_map<int,vector<string>> maps;
+}
 
 
-namespace InOutWorld{
-    
-};
-
+vector<matrixMap> getLocation(int n);
 
 
 

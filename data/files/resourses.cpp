@@ -8,29 +8,22 @@ namespace fontes {
 }
 
 namespace path_to_img {
-   string bg1 = "images/System/Backgrounds/bg1.jpeg";  
-   string bg2 = "images/System/Backgrounds/bg2.jpeg";  
-   string bg3 = "images/System/Backgrounds/bg3.jpeg";  
+    string bg1 = "images/System/Backgrounds/bg1.jpeg";  
+    string bg2 = "images/System/Backgrounds/bg2.jpeg";  
+    string bg3 = "images/System/Backgrounds/bg3.jpeg";  
    
-   namespace Weapons{
-          
-   }
+ 
+    unordered_map<int,string> Player_images = {
+        {1,"images/Essence/Player/GG1.png"},
+        {2,"images/Essence/Player/GG2.png"},
+        {3,"images/Essence/Player/GG_left1.png"},
+        {4,"images/Essence/Player/GG_right1.png"},
+    };
 
-   namespace Items{
 
-   }
+   unordered_map<int,string> Essence_images = {};
 
-   namespace Equipment{
-
-   }
-
-   namespace Essence{
-
-   }
-
-   namespace Spells{
-
-   }
+   
 
     unordered_map<int,string> Objects = {
         {0,"Void"},

@@ -8,6 +8,12 @@
 #include "../Magic/Spells.h"
 #include "../Abstract/Group.h"
 
+
+#define TOP 1
+#define BOTTOM 2
+#define RIGTH 3
+#define LEFT 4
+
 struct Resistance{
     Magic magic;
     Physic physic;
@@ -24,8 +30,8 @@ struct Property{
     float value,count,max,time;
 
     Property();
-
-    Property(float v,float c,float m,float t);
+    
+    Property(float v,float c,float max,float t);
 };
 
 class Essence : public Base{
@@ -42,7 +48,7 @@ public:
     Sprite spr;
     vector<int> images_numbers;
     
-    float Air,MaxAir;
+    float Air,MinAir;
 
     unordered_map<unsigned int , int> familiar;
 
@@ -56,7 +62,8 @@ public:
     float mana_control,mana_reaction; 
     float charisma;
 
-    float tepmerature,max_temperature;
+
+    float tepmerature,max_temperature,min_temperature;
 
     Property health;
     Property mana;
@@ -65,28 +72,47 @@ public:
 
     float integrity_soul;
     float hunger,thirst;
+    float hunger_min,thirst_min;
 
     Property speed;
 
 
     int behavior_id;
+
+    Essence();
     
 
-    Essence(int pk,string name,string description,string group_name,
+    Essence(int pk,float x,float y,float w,float h,
+           string name,string description,string group_name,
            int sight,int hearing,
            vector<int> imgs_numbrs,
            Resistance rest,
-           float strength, float agility,float mana_control,float mana_reaction,float charisma,float max_temperature,float MaxAir,
-           Property health,Property mana,Property stamina,Property mind,Property speed,
+           float strength, 
+           float agility,
+           float mana_control,
+           float mana_reaction,
+           float charisma,
+           float max_temperature,
+           float min_temp,
+           float MaxAir,
+           Property health,
+           Property mana,
+           Property stamina,
+           Property mind,
+           Property speed,
            float int_soul,
+           float hun,float th,
            int beh_id
     );
 
-    void behaivor();
+    void behaivor(RenderWindow& window);
 };
 
 
+extern Essence PLAYER;
+
 extern unordered_map<int,Essence> GLOBAL_ESSENCES_list;
 
+extern unordered_map<int,function<void(Essence*,RenderWindow&)>> EssencesLambdas;
 
 #endif

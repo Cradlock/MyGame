@@ -41,6 +41,12 @@ Bosses               default_npc  |      Armlet-|
 
 
 
+
+
+
+
+
+
 ---------------------------------------------------------------------------------------------------
 
 Spells 
@@ -94,6 +100,19 @@ if isGame;
 ----------------------------------------------------------------->
 
 (Lambda Functions (save functions)) -> massive_lambda_functions
+
+
+
+values in lambda ->
+
+Essence& self,RenderWindow& window,
+unordered_map<string,Texture>& textures,
+vector<Object>& allObjects,
+vector<Essence>& allEssences
+
+
+
+
 
 
 
@@ -611,6 +630,9 @@ InTOwer:
 
     }
   }
+
+
+
 
 
 

@@ -1,22 +1,61 @@
 #include "location.h"
 
 
+string base = "files/Locations/mapsMatrix/";
 
-
-namespace InTower{    
-    // Вот "словарь" который хранит карты
-    unordered_map<int,vector<matrixMap>> All_Maps = {
-    //  1 - вот здесь это номер карты,
-    //    { {},{} } - вот это две матрицы первая для текстурок мира вторая для обьектов.Если хочеш новую карту добавить то                
-    //       вот такую строку нужно приписать: { <Номер карты: это число>,{ <Матрица для текстурок>,<Матрица для обьектов> } }
-    //         |
-    //         v
-        {1 ,{ { {3,3,3,3} , {3,3,3,3} },{ {1,0,0,3} , {0,0,0,3}   } }},
+namespace Maps_pathes{
+    unordered_map<int,vector<string>> maps = {
+        {1,{
+            base + "level_zero.txt",
+            base + "level_zero_objects.txt",
+        }},
     };
-    //  матрица в с++ выглядить так: 
-    //  {                          
-    //      { 3, 3, 3}, <- про запятие не забывай 
-    //      { 3, 3, 3},
-    //      { 3, 3, 3},
-    //  }
+}
+
+vector<matrixMap> getLocation(int num){
+    string pathTexture = Maps_pathes::maps[num][0];
+    string pathObject = Maps_pathes::maps[num][1];
+
+    matrixMap map;
+    matrixMap mapObjects;
+    string line;
+    
+
+    ifstream file(pathTexture);
+
+    if (!file) {
+        cerr << "Error! -> " << pathTexture << ' ' << pathObject << endl;
+    }
+
+    while (getline(file, line)) {
+        stringstream ss(line);
+        vector<int> row;
+
+        int num;
+        while (ss >> num) {
+            row.push_back(num);
+        }
+
+        map.push_back(row);
+    }
+    file.close();
+    line = "";
+
+    ifstream fileObj(pathObject);
+    
+    while (getline(fileObj, line)) {
+        stringstream ss(line);
+        vector<int> row;
+
+        int num;
+        while (ss >> num) {
+            row.push_back(num);
+        }
+
+        mapObjects.push_back(row);
+    }
+    fileObj.close();
+
+
+    return vector<matrixMap>{ map,mapObjects };
 };
