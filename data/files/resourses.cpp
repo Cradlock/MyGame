@@ -3,6 +3,8 @@
 
 
 
+
+
 namespace fontes {
     string pixel_font = "fonts/pixel.ttf";
 }
@@ -14,10 +16,11 @@ namespace path_to_img {
    
  
     unordered_map<int,string> Player_images = {
-        {1,"images/Essence/Player/GG1.png"},
-        {2,"images/Essence/Player/GG2.png"},
-        {3,"images/Essence/Player/GG_left1.png"},
-        {4,"images/Essence/Player/GG_right1.png"},
+       {1 , "images/Essence/Player/GG.png"},
+       {2 , "images/Essence/Player/GG_right1.png"},
+       {3 , "images/Essence/Player/GG_right2.png"},
+       {4 , "images/Essence/Player/GG_right3.png"},
+       {5 , "images/Essence/Player/GG_right4.png"}
     };
 
 

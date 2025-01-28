@@ -16,6 +16,8 @@
 #include <windows.h>
 #include <cwchar>  
 #include <random>
+#include <thread>  
+#include <chrono>
 
 #define Title "Nexus"
 
@@ -34,6 +36,7 @@ extern float standart_size;
 
 extern int experience;
 
+extern unsigned int counterId;
 
 extern RenderWindow window;
 

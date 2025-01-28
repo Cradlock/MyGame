@@ -157,7 +157,6 @@ void Essence::update(const vector<unique_ptr<Boundary>>& boundaries){
             }
         }else{
             walk_count = this->img_lists.size() - 1;
-
         }
 
 }

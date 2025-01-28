@@ -39,28 +39,31 @@ public:
     Sprite spr;
     vector<Effect> effects;
     vector<Item> items;
-    function<void()> TouchFunc;
-    function<void()> destructionFunc;
     int position_level;
-    bool IsExactSize;
-    float wmin,wmax;
-    float hmin,hmax;
+    int IdFunc;
+
+    Object(int l,string t,float e,vector<int> images,float w,float h,int IdTouch);
+
+    Object(int l,string t,float e,vector<int> images,float w,float h,FloatRect rect,int IdTouch);
+
+    Object(int l,string t,float e,vector<int> images,float w,float h,vector<Effect> efs,vector<Item> its,int IdTouch);
     
-    Object(int l,string t,float e,vector<int> images,float w,float h);
 
-    Object(int l,string t,float e,vector<int> images,float ws,float we,float hs,float he);
+    void Func(Essence& esse,vector<Object>& Objects_top,vector<Object>& Objects_bottom,vector<Projectile>& projectiles,RenderWindow& window);
 
-    Object(int l,string t,float e,vector<int> images,function<void()> f,vector<Effect> efs,vector<Item> ite);
-
+    
 };
 
 
 extern vector<Object> Global_Objects_list;
 
+extern unordered_map<int,function<void(Object*,Essence&,vector<Object>& ,vector<Object>&,vector<Projectile>&,RenderWindow&)>> Objects_functions_DB;
+
 
 class Build : public Base{
     Sprite spr;
     vector<Object> objects;
+    
     vector<Item> items;
     vector<Effect> effects;
     vector<Essence> essences;

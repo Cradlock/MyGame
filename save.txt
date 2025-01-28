@@ -1,0 +1,517 @@
+function get_custom_users() {
+    global $wpdb;
+  
+	$user = wp_get_current_user();
+	
+	
+	if($user->exists()){
+		if(current_user_can('administrator')){
+  
+			$result = $wpdb->get_results(
+				"SELECT * FROM `Skills` "
+			);	
+    ?>
+      
+	  <style>
+         .out_box{
+            width: 100vw;
+			height: 95vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+		 }
+		 .in_box{
+			margin: 0;
+            width: 100%;
+			max-width: 800px;
+			height: fit-content;
+			display: flex;
+			flex-direction: column;
+			padding: 25px;
+			border-radius: 25px;
+			background: white; 
+		 }
+		 .in_box_user{
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+			border-bottom: 2px solid gray;
+			padding-bottom: 10px;
+		 }
+		 #edit_btn{
+			border: 0;
+			border-radius: 10px;
+			background: green;
+			font-size: 14px;
+			padding: 10px 20px 10px 20px;
+			width: fit-content; 
+		 } 
+		 #edit_btn:hover{
+			transition: 0.5s ease;
+			background: rgb(15,55,15);
+		 }
+		 .in_box_skills{
+			display: flex;
+			flex-wrap: wrap;
+		 }
+
+		 .list_skill{
+            width: 60%;
+			height: 350px;
+		    border: 1px solid gray;
+			overflow-y: auto; 
+		 }
+		 .skill{
+		    min-height: 20px;
+			height: fit-content;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: center;
+			border: 1px solid black;
+            padding: 15px 0 5px 15px;
+		 }
+
+		 .skill div{
+			display: flex;
+			
+		 }
+		 .skill p{
+			margin: 0;
+		 }
+		 .skill h1{
+			font-size: 25px;
+		    margin: 0;
+			padding: 0; 
+		}
+		.skill button{
+			margin: 0 0 0 10px;
+			padding: 5px 10px 5px 10px;
+			font-size: 13px;
+			height: 26px;
+			border-radius: 10px;
+		}
+        
+		
+
+		.delete_btn{
+            background: transparent;
+			border: 1px solid red;
+			color: red;
+		}
+		.delete_btn:hover{
+			transition: 0.5s ease;
+			background: red;
+			border:0;
+			color: black;
+		}
+		.skill a button:hover{
+			transition: 0.5s ease;
+			background: white;
+			color: black;
+		}
+		
+		 
+
+		 .create_skill{
+	        width: 25%;
+			min-width: 300px;
+			height: 350px;
+			border: 1px solid gray;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 20px;
+		 }
+		 .create_skill input{
+			width: 95%;
+			margin: 5px;
+            height: 30px;
+			padding-bottom: 25px;
+		 }
+
+
+		 @media (max-width:800px) {
+		   .in_box_skills div{
+			  width:100%;
+		   }
+		   .in_box{
+              overflow-y: auto;
+			  border-radius: 0;
+			}
+		 }
+		 .EditCover{
+			width: 100vw;
+			height: 95vh;
+			position: absolute;
+			background: rgba(0,0,0,0.5);
+			z-index: 2;
+            top:0;
+			right: 0;
+			left:0;
+			display: none;
+			align-items: center;			
+			justify-content: center;
+		 }
+		 .EditModal{
+			padding: 10px;
+            width: 100%;
+			max-width: 500px;
+			display: flex;
+			flex-direction: column;
+			background: white;
+			align-items: center;			
+            border-radius: 25px; 
+		 }
+		 .EditModal .Edit form {
+			display: flex;
+			flex-direction: column;
+			row-gap: 15px;
+		 }
+		 .EditModal .Edit form input {
+			width: 100%;
+			border: 1px solid rgb(52, 51, 51);
+		 }
+		 .EditModal .Edit form textarea {
+		    width: 100%;
+			height: 250px;
+		}
+
+		 .ExitModal{
+			width: 100%;
+			display: flex;
+			align-items: flex-start;
+			justify-content: flex-end;
+		 }
+		 .ExitModal button{
+			color: black;
+			background: white;
+			border-radius: 100%;
+			padding: 5px 9px;
+			border: 1px solid grey;
+			transition: all .5s;
+		 }
+		 .ExitModal button:hover {
+			color: red;
+			border-color: red;
+		 }
+		 .Edit__submit {
+			width: fit-content;
+			display: block;
+			margin-left: auto;
+			border:0;
+		 }
+
+ 
+	  </style>
+
+	  <div class="out_box">
+        
+        <div class="in_box">
+			<div id="errors" hidden> 
+                 None 
+			</div>
+            <div class="in_box_user"> 
+
+                  <?php 
+						echo " <span>Email: " . $user->user_email ."</span>";
+						echo " <span>Login: " . $user->user_login ."</span>";
+				  ?>
+			     
+				<button id="edit_btn">EDIT</button>
+		    </div>
+	        
+			<div class="in_box_skills"> 
+				 <div class="create_skill"> 
+					 <form method="POST" enctype="multipart/form-data"> 
+						<input type="text" name="title" placeholder="title..." >
+						<input type="url" name="link" placeholder="url..." >
+						<input type="file" name="image" >
+						<textarea type="text" name="desc" placeholder="description..."	></textarea>
+ 
+						<input type="submit" name="new_skill_file" value="+Add">
+					 </form>
+				 </div>
+
+				 <div class="list_skill"> 
+                    <?php 
+					    foreach($result as  $var){
+							
+							$title = htmlspecialchars($var->title, ENT_QUOTES);
+                            $desc = htmlspecialchars($var->description, ENT_QUOTES);
+                            $link = htmlspecialchars($var->link, ENT_QUOTES);
+                            $img_path = htmlspecialchars($var->img_path, ENT_QUOTES);
+							
+							echo "<div class='skill'>";
+                            echo "<h1>$var->title</h1>";
+                            echo "<p>$var->description<p>";
+
+							echo "<div> <a href='$var->link'><button>Watch</button> </a> 
+							   
+							        <button onclick='OpenEditModal($var->id, 
+									                             \"$title\" , 
+									                             \"$desc\" , 
+																 \"$link\" , 
+																 \"$img_path\"
+																 )' class='edit_btn'>
+																 Edit
+																 
+																 </button> 
+                           
+								<form method='POST' >
+								    <input type='hidden' name='delete_skill' value='$var->id'>
+								    <button type='submit' class='delete_btn'>delete</button> 
+							    </form>
+								</div>";
+							echo "</div>";
+						}
+					?>
+
+					<div class="EditCover" >
+                            <div class="EditModal">
+					              <div class="ExitModal">  <button onclick='ExitEditModal()' style='font-size: 16px;'>&times;</button></div>
+								  <div class="Edit">
+									<form method="post" id="EditForm"  enctype="multipart/form-data">
+							                <input type="hidden" name="skill_id" id="skill_id">    
+							                <input type="hidden" name="skill_img" id="skill_img">    
+										    <input type='text' name='title' value='' id="ed_title">
+				                 		    <input type='url' name='link'  value='' id="ed_link">
+				                 		    <textarea type='text' name='desc'  value='' id="ed_desc"> 
+
+											</textarea>
+					                	    <input type='file' name='image' >
+									    
+									    	<input type="submit" class='Edit__submit' name="edit_button" value="Save change">
+									</form>
+								  </div>
+						    </div>
+					</div>
+					<script> 
+						function OpenEditModal(id,title,desc,link,img){
+                              document.querySelector(".EditCover").style.display = "flex";
+							  document.getElementById("skill_id").value = id;
+							  document.getElementById("skill_img").value = img;
+                              document.getElementById("ed_title").value = title;
+                              document.getElementById("ed_link").value = link;
+                              document.getElementById("ed_desc").value = desc;
+						}
+						function ExitEditModal(){
+							document.querySelector(".EditCover").style.display = "none";
+						}
+					</script>
+				 </div>
+		    </div>
+		
+		</div>
+      
+	   </div>
+
+    
+	<?php
+        
+		
+		}
+	}
+}
+
+add_shortcode('display_users', 'get_custom_users');
+
+function handle_new_skill_file(){
+   
+   if(isset($_POST["new_skill_file"])){
+       global $wpdb;
+
+	   $title = $_POST["title"];
+	   $url = $_POST["link"];
+	   $desc = $_POST["desc"];
+       $img_name = '';
+
+	   if(isset($_FILES["image"])){
+            
+			$upload_dir = wp_upload_dir();
+            $upload_path = $upload_dir['basedir'] . MEDIA_PATH;
+			$upload_url = $upload_dir["baseurl"] . MEDIA_PATH;
+
+			$file_name = $_FILES["image"]["name"];
+			$file_path = $upload_path . '/' . $file_name;
+
+			if (file_exists($file_path)) {
+				$file_name = time() . '-' . $file_name;  
+				$file_path = $upload_path . '/' . $file_name;
+			}
+            
+			move_uploaded_file($_FILES["image"]["tmp_name"], $file_path);
+
+			$img_name = $file_name;
+	   }
+
+
+	  
+       
+	   $table_name = "skills";
+     
+	   $inserted = $wpdb->insert(
+		$table_name,
+		[
+			"title" => $title,
+			"description" => $desc,
+			"img_path" => $img_name,
+			"link" => $url,
+			
+		]
+	    );
+
+   }
+}
+
+add_action("init","handle_new_skill_file");
+
+
+function handle_delete_skill(){
+	
+	if(isset($_POST["delete_skill"])){
+        global $wpdb;
+        
+		$sk_id = intval($_POST["delete_skill"]);
+
+		$table_name = "skills";
+		$is_del = $wpdb->delete(
+			$table_name,
+			['id' => $sk_id],
+			['%d']
+		);
+        
+	
+	}
+}
+
+add_action("init","handle_delete_skill");
+
+
+function handle_edit_skill(){
+   if(isset($_POST["edit_button"])){
+	global $wpdb;
+    
+	$n_id = $_POST["skill_id"];
+	$n_title = $_POST["title"];
+	$n_desc = $_POST["desc"];
+	$n_link = $_POST["link"];  
+	$img_name = $_POST["skill_img"];
+
+	if(isset($_FILES["image"])){
+            
+			$upload_dir = wp_upload_dir();
+            $upload_path = $upload_dir['basedir'] . MEDIA_PATH;
+			$upload_url = $upload_dir["baseurl"] . MEDIA_PATH;
+
+			$file_name = $_FILES["image"]["name"];
+			$file_path = $upload_path . '/' . $file_name;
+
+			if (file_exists($file_path)) {
+				$file_name = time() . '-' . $file_name;  
+				$file_path = $upload_path . '/' . $file_name;
+			}
+            
+			move_uploaded_file($_FILES["image"]["tmp_name"], $file_path);
+
+			$img_name = $file_name;
+	}
+
+	$table_name = "skills";
+	$update = $wpdb->update(
+        $table_name,
+		[
+			'title' => $n_title,
+			'link' => $n_link,
+			'description' => $n_desc,
+			'img_path' => $img_name
+		],
+		["id" => $n_id],
+		["%s","%s","%s"],
+		["%d"]
+	);
+
+	
+   
+   }
+  
+}
+
+add_action("init","handle_edit_skill");
+
+
+define("MEDIA_PATH","/media");
+
+
+
+function get_skills(){
+	global $wpdb;
+
+	$skills = $wpdb->get_results("SELECT * FROM `skills`");
+	?>
+      <style> 
+          .carousel_skills{
+			width: 100vw;
+			height: fit-content;
+			overflow-x: auto;
+			display: flex;
+			justify-content: center;
+			margin: 0;
+			padding: 0;
+
+		  }
+		  .skill{
+			width: 300px;
+			min-height: 300px;
+			padding: 10px;
+            margin: 20px;
+			background: rgb(12, 22, 79);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		  }
+		  .skill h1{
+			font-size: 25px;
+			color: white;
+		  }
+		  .skill_desc{
+			height: 250px;
+			overflow-y: auto;
+			color: white;
+		  }
+		  .skill img{
+			width: 240px;
+			height: 230px;
+			border-radius: 20px;
+		  }
+
+	  </style>
+	<?php
+	echo "<div class='carousel_skills'>";
+
+	foreach($skills as $key => $var){
+        ?>
+            <div class="skill">
+                <img src="
+				    <?php 
+					    echo $var->img_path;
+					?>
+				">
+
+				<h1>
+					<?php  echo get_site_url() . "wp-content/uploads" . MEDIA_PATH . "$var->title"; ?>
+				</h1>
+				
+				<div class="skill_desc">
+				<p>
+				   <?php  echo "$var->description"; ?>
+				</p>
+                </div> 
+			</div>
+		<?php
+	}
+	echo "</div>";
+}
+
+add_shortcode("CUSTOM_get_skills","get_skills");

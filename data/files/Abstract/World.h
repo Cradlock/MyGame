@@ -17,6 +17,12 @@ public:
    vector<Essence> essences;
    Essence player;
 
+   uint8_t red = 50;
+   uint8_t green = 50;
+   uint8_t blue = 50;
+   uint8_t opacity = 155;
+   
+
    World();
 
    World(String title,int numMap,vector<Essence> essnc);

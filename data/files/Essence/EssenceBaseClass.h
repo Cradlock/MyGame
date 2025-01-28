@@ -73,6 +73,7 @@ public:
     float integrity_soul;
     float hunger,thirst;
     float hunger_min,thirst_min;
+    
 
     Property speed;
 
@@ -101,7 +102,8 @@ public:
            Property mind,
            Property speed,
            float int_soul,
-           float hun,float th,
+           float hun,
+           float th,
            int beh_id
     );
 
@@ -115,4 +117,4 @@ extern unordered_map<int,Essence> GLOBAL_ESSENCES_list;
 
 extern unordered_map<int,function<void(Essence*,RenderWindow&)>> EssencesLambdas;
 
-#endif
+#endif  

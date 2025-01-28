@@ -285,10 +285,19 @@ for(int i = 0; i < massive.size();++i){
 
 
 In Game cycle
-for(auto& o : blocks_massive){
-  o.draw()
-  .....Logic onCollision with Essence
+for(auto& e : essences){
+   for(auto& o : objects ){
+       if(intersect(e) ){
+          o.touchFunc(& e, &Objects_list, &window);
+       }
+   }
+   for(auto$ p : partes){
+
+   }
+
 }
+
+
 
 
 
@@ -305,6 +314,10 @@ Logic Save Objects
                                          \
                                           \
                                           texture  ( string , shared_ptr<Texture> )
+
+
+-----------------------------------------------------------------------------------------
+Behaivor logic 
 
 
 
@@ -631,6 +644,11 @@ InTOwer:
     }
   }
 
+  level wrath{
+    2030{
+      start apocaylps:-> ancient organic start mutation another organic(animal)
+    }
+  }
 
 
 
