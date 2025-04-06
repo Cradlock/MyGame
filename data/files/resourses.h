@@ -26,6 +26,20 @@ public:
 
 };
 
+class Light : public Base{
+    public:
+      CircleShape circle;
+      float radius;
+      Color color; 
+    Light(float rad,Color color);
+
+    Light();
+
+   
+};
+
+
+
 namespace path_to_audio{
 
 };
@@ -50,7 +64,30 @@ namespace path_to_img {
    }
 };
 
-
+class MainMenu{
+    public:
+        Font pixel_l_font;
+    
+        Sprite background_sprite;
+        Texture background_texture;
+        Text title;
+        Text button_play;
+        Text button_saves;
+        Text button_settings;
+        Text button_exit;
+    
+        MainMenu(int randomNumber);
+        
+    
+        int update(Vector2f mousePos);
+        
+        int updateSettings(Vector2f mousePos);
+    
+        int updateSaves(Vector2f mousePos,string& path_to_save,bool& isGame);
+    
+        void BackgroundRender();
+    };
+    
 
 
 #endif

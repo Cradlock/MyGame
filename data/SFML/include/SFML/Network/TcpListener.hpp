@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -65,14 +65,20 @@ public:
     unsigned short getLocalPort() const;
 
     ////////////////////////////////////////////////////////////
-    /// \brief Start listening for connections
+    /// \brief Start listening for incoming connection attempts
     ///
-    /// This functions makes the socket listen to the specified
-    /// port, waiting for new connections.
-    /// If the socket was previously listening to another port,
-    /// it will be stopped first and bound to the new port.
+    /// This function makes the socket start listening on the
+    /// specified port, waiting for incoming connection attempts.
     ///
-    /// \param port    Port to listen for new connections
+    /// If the socket is already listening on a port when this
+    /// function is called, it will stop listening on the old
+    /// port before starting to listen on the new port.
+    ///
+    /// When providing sf::Socket::AnyPort as port, the listener
+    /// will request an available port from the system.
+    /// The chosen port can be retrieved by calling getLocalPort().
+    ///
+    /// \param port    Port to listen on for incoming connection attempts
     /// \param address Address of the interface to listen on
     ///
     /// \return Status code

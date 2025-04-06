@@ -12,12 +12,14 @@ class Spell : public Base{
     int counter;
     int cost_magic;
     Influence influence;
-    vector<string> images;
+    vector<int> images_numbers;
 
-    function<void()> update;
-    function<void()> onCollision;
+
+    int cost_spell_id;
+    int update_id;
+    int onCollision_id;
     
-    Spell(string icon_path,int c_m,vector<string> imgsl,Influence infl,function<void()> up,function<void()> onColl);
+    Spell();
 };
 
 

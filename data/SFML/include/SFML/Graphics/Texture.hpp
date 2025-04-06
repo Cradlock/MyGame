@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -35,10 +35,11 @@
 
 namespace sf
 {
-class Window;
+class InputStream;
 class RenderTarget;
 class RenderTexture;
-class InputStream;
+class Text;
+class Window;
 
 ////////////////////////////////////////////////////////////
 /// \brief Image living on the graphics card that can be used for drawing
@@ -54,8 +55,8 @@ public:
     ////////////////////////////////////////////////////////////
     enum CoordinateType
     {
-        Normalized, ///< Texture coordinates in range [0 .. 1]
-        Pixels      ///< Texture coordinates in range [0 .. size]
+        Normalized, //!< Texture coordinates in range [0 .. 1]
+        Pixels      //!< Texture coordinates in range [0 .. size]
     };
 
 public:
@@ -277,6 +278,43 @@ public:
     void update(const Uint8* pixels, unsigned int width, unsigned int height, unsigned int x, unsigned int y);
 
     ////////////////////////////////////////////////////////////
+    /// \brief Update a part of this texture from another texture
+    ///
+    /// Although the source texture can be smaller than this texture,
+    /// this function is usually used for updating the whole texture.
+    /// The other overload, which has (x, y) additional arguments,
+    /// is more convenient for updating a sub-area of this texture.
+    ///
+    /// No additional check is performed on the size of the passed
+    /// texture, passing a texture bigger than this texture
+    /// will lead to an undefined behavior.
+    ///
+    /// This function does nothing if either texture was not
+    /// previously created.
+    ///
+    /// \param texture Source texture to copy to this texture
+    ///
+    ////////////////////////////////////////////////////////////
+    void update(const Texture& texture);
+
+    ////////////////////////////////////////////////////////////
+    /// \brief Update a part of this texture from another texture
+    ///
+    /// No additional check is performed on the size of the texture,
+    /// passing an invalid combination of texture size and offset
+    /// will lead to an undefined behavior.
+    ///
+    /// This function does nothing if either texture was not
+    /// previously created.
+    ///
+    /// \param texture Source texture to copy to this texture
+    /// \param x       X offset in this texture where to copy the source texture
+    /// \param y       Y offset in this texture where to copy the source texture
+    ///
+    ////////////////////////////////////////////////////////////
+    void update(const Texture& texture, unsigned int x, unsigned int y);
+
+    ////////////////////////////////////////////////////////////
     /// \brief Update the texture from an image
     ///
     /// Although the source image can be smaller than the texture,
@@ -481,6 +519,14 @@ public:
     Texture& operator =(const Texture& right);
 
     ////////////////////////////////////////////////////////////
+    /// \brief Swap the contents of this texture with those of another
+    ///
+    /// \param right Instance to swap with
+    ///
+    ////////////////////////////////////////////////////////////
+    void swap(Texture& right);
+
+    ////////////////////////////////////////////////////////////
     /// \brief Get the underlying OpenGL handle of the texture.
     ///
     /// You shouldn't need to use this function, unless you have
@@ -539,6 +585,7 @@ public:
 
 private:
 
+    friend class Text;
     friend class RenderTexture;
     friend class RenderTarget;
 
@@ -569,16 +616,16 @@ private:
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    Vector2u     m_size;          ///< Public texture size
-    Vector2u     m_actualSize;    ///< Actual texture size (can be greater than public size because of padding)
-    unsigned int m_texture;       ///< Internal texture identifier
-    bool         m_isSmooth;      ///< Status of the smooth filter
-    bool         m_sRgb;          ///< Should the texture source be converted from sRGB?
-    bool         m_isRepeated;    ///< Is the texture in repeat mode?
-    mutable bool m_pixelsFlipped; ///< To work around the inconsistency in Y orientation
-    bool         m_fboAttachment; ///< Is this texture owned by a framebuffer object?
-    bool         m_hasMipmap;     ///< Has the mipmap been generated?
-    Uint64       m_cacheId;       ///< Unique number that identifies the texture to the render target's cache
+    Vector2u     m_size;          //!< Public texture size
+    Vector2u     m_actualSize;    //!< Actual texture size (can be greater than public size because of padding)
+    unsigned int m_texture;       //!< Internal texture identifier
+    bool         m_isSmooth;      //!< Status of the smooth filter
+    bool         m_sRgb;          //!< Should the texture source be converted from sRGB?
+    bool         m_isRepeated;    //!< Is the texture in repeat mode?
+    mutable bool m_pixelsFlipped; //!< To work around the inconsistency in Y orientation
+    bool         m_fboAttachment; //!< Is this texture owned by a framebuffer object?
+    bool         m_hasMipmap;     //!< Has the mipmap been generated?
+    Uint64       m_cacheId;       //!< Unique number that identifies the texture to the render target's cache
 };
 
 } // namespace sf

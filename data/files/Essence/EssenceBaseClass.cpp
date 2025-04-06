@@ -48,77 +48,20 @@ Essence::Essence(int pk,float x,float y,float w,float h,string name,string descr
         this->thirst_min = th;
         this->integrity_soul = int_soul;
         this->behavior_id = beh_id;
+    
     };
 
-void Essence::behaivor(RenderWindow& window){
-    if(this->behavior_id){
-       EssencesLambdas[behavior_id](this,window);
-    }
-}
 
 
-unordered_map<int,function<void(Essence*,RenderWindow&)>> EssencesLambdas = {
-    {1,[](Essence* self,RenderWindow& window){
-
-        self->flag = false;
-
-        if (Keyboard::isKeyPressed(Keyboard::W)) {
-                self->counter1 = 0;
-                self->flag = true;
-                self->spr.move(0,-self->speed.value);
-            }
-            
-        if (Keyboard::isKeyPressed(Keyboard::S)) {
-                self->counter1 = 1;
-                self->flag = true;
-                self->spr.move(0,self->speed.value);
-                
-            }
-            
-        if (Keyboard::isKeyPressed(Keyboard::A)) {
-               self->counter1 = 2;
-                self->flag = true;
-               self->spr.move(-self->speed.value,0);
-            }
-            
-        if (Keyboard::isKeyPressed(Keyboard::D)) {
-               self->counter1 = 3;
-                self->flag = true;
-               self->spr.move(self->speed.value,0);
-        }
-        
-        if(self->flag){
-            if(self->c1.getElapsedTime().asSeconds() > self->speed.time){
-              if(self->counter1 == 2){
-                self->spr.setScale(-1.0 , 1);
-                setSize(self->spr,-self->width,self->height);
-
-              }else{
-                setSize(self->spr,self->width,self->height);
-
-           }
-           if(self->counter >= self->images_numbers.size() - 1){
-                self->counter = 0;
-           }
-            self->counter++;
-            self->c1.restart();
-            }
-        }else{
-            self->counter = 0;
-        }
 
 
-        window.draw(self->spr);
-        
-    }} 
-};
 
 
 Essence PLAYER = {1, 0,0, 5,15, 
         "Wan",
         "????????????????????????????",
         "None",
-        250,100, 
+        50,100, 
         { 1,2,3,4,5 } ,
         Resistance{ Magic(),Physic(),Energy(),Bio(),0.f,15.f },
         25.f,
@@ -133,7 +76,7 @@ Essence PLAYER = {1, 0,0, 5,15,
         Property{50.f,1,100,0.1},
         Property{50.f,1,100,0.1},
         Property{50.f,1,100,0.1},
-        Property{0.5,0,15,0.08},
+        Property{0.25,0,15,0.08},
         89.f,0.f,0.f,
         1};
 

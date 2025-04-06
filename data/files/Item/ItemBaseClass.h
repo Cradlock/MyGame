@@ -20,22 +20,20 @@ public:
     int counter;
     Sprite spr;
     int level;
+    vector<int> slots;
     vector<Effect> effects;
     vector<int>  images_numbers;
 
-    function<void()> UseFunction;
-    function<void()> InInventoryFunction;
-    function<void()> InHandFunction; 
+    int UseFunction;
+    int InInventoryFunction;
+    int InSlotFunction; 
+
+    Light light;
     
 };
 
-
-
-
 class Projectile : public Base{};
 
-
 extern unordered_map<int,Item> GLOBAL_ITEM_list;
-
 
 #endif

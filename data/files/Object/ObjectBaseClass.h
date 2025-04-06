@@ -31,33 +31,38 @@
 #define Tree 1
 
 
+
 class Object : public Base{
 public:
+
     float endurance;
     string title;
     vector<int> images_numbers;
     Sprite spr;
+    
     vector<Effect> effects;
     vector<Item> items;
+
     int position_level;
     int IdFunc;
 
+    Light light;
+
+    Object();
+
     Object(int l,string t,float e,vector<int> images,float w,float h,int IdTouch);
+
+    static Object WithLightObject(int l,string t,float e,vector<int> images,float w,float h,int IdTouch,int light_num);
 
     Object(int l,string t,float e,vector<int> images,float w,float h,FloatRect rect,int IdTouch);
 
     Object(int l,string t,float e,vector<int> images,float w,float h,vector<Effect> efs,vector<Item> its,int IdTouch);
     
 
-    void Func(Essence& esse,vector<Object>& Objects_top,vector<Object>& Objects_bottom,vector<Projectile>& projectiles,RenderWindow& window);
+    void Func(Essence& esse,RenderWindow& window);
 
     
 };
-
-
-extern vector<Object> Global_Objects_list;
-
-extern unordered_map<int,function<void(Object*,Essence&,vector<Object>& ,vector<Object>&,vector<Projectile>&,RenderWindow&)>> Objects_functions_DB;
 
 
 class Build : public Base{
@@ -83,10 +88,8 @@ public:
 
 
 
+extern vector<Object> Global_Objects_list;
 
-
-
-
-
+extern vector<Light> Global_light_list;
 
 #endif

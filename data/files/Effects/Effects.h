@@ -24,7 +24,7 @@ public:
     String title,description;
     Sprite spr_icon;
     string tex_icon;
-    function<void()> func;
+    int func_id;
     bool isView;
 
     Effect();

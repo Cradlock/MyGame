@@ -18,6 +18,8 @@
 #include <random>
 #include <thread>  
 #include <chrono>
+#include <utility>
+#include <stdexcept>
 
 #define Title "Nexus"
 
@@ -33,20 +35,28 @@ extern float NORMAL_ZOOM;
 extern float NORMAL_SPEED;
 extern float standart_size;
 
+extern float DAY_LENGTH;
+extern float DELTA_TIME;
+extern const float timeSpeed;
 
 extern int experience;
 
-extern unsigned int counterId;
+extern unsigned int counterID;
 
 extern RenderWindow window;
 
-
-auto renderObject = [ ptrWindow = &window ]( auto&&... argc ){
-     (ptrWindow->draw(std::forward<decltype(argc)>(argc)), ...);
-};
-
-
 void setSize(Sprite& s,float w,float h);
+
+
+bool OnCursor(Text& b,Vector2f mousePos);
+
+void OnCursor(Text& b,bool& t,Vector2f mousePos);
+
+void SetWhite(Text& t);
+
+void SetBlack(Text& t);
+
+
 
 
 #endif

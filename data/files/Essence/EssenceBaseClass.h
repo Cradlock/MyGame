@@ -9,6 +9,7 @@
 #include "../Abstract/Group.h"
 
 
+
 #define TOP 1
 #define BOTTOM 2
 #define RIGTH 3
@@ -79,6 +80,7 @@ public:
 
 
     int behavior_id;
+    Light light;
 
     Essence();
     
@@ -105,9 +107,10 @@ public:
            float hun,
            float th,
            int beh_id
+
     );
 
-    void behaivor(RenderWindow& window);
+
 };
 
 
@@ -115,6 +118,6 @@ extern Essence PLAYER;
 
 extern unordered_map<int,Essence> GLOBAL_ESSENCES_list;
 
-extern unordered_map<int,function<void(Essence*,RenderWindow&)>> EssencesLambdas;
+
 
 #endif  

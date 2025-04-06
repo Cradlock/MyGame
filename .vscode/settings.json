@@ -1,4 +1,5 @@
 {
+    
     "files.associations": {
         "ostream": "cpp",
         "iostream": "cpp",
@@ -45,5 +46,9 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp"
+    },
+    "terminal.integrated.env.windows": {
+            "PATH": "C:\\mingw13.1.0\\bin;C:\\other\\paths;${env:PATH}"
     }
+    
 }

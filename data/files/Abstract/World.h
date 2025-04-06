@@ -17,12 +17,16 @@ public:
    vector<Essence> essences;
    Essence player;
 
-   uint8_t red = 50;
-   uint8_t green = 50;
-   uint8_t blue = 50;
-   uint8_t opacity = 155;
-   
+   float red;
+   float green;
+   float blue;
+   float opacity;
 
+   bool PosL = true;
+
+   float timeOfDay;
+   float elapsedTime;
+   
    World();
 
    World(String title,int numMap,vector<Essence> essnc);

@@ -57,13 +57,13 @@ Spells
 |
 |---- Self
 |
+|              spawner
+|---- Summon /
+|            \
+|              essence 
 |
 |
-|---- Summon ----  Spawner  ----  Essence
-|
-|
-|
-|---- Domain
+|---- Domain expension
 |
 |
 |
@@ -150,10 +150,10 @@ Effect conditions of existance --------- in Time(have timer)
 
 Item ->  
    func ---- ?  Use
-   /    \     
-  |      \     
-  |       \     
-  |        \ 
+   /    \ \    
+  |      \  \  
+  |       \   \    
+  |        \    ?in slot
   ?         ?
 InHand      in Invetnory 
 
@@ -297,8 +297,34 @@ for(auto& e : essences){
 
 }
 
+Day Nigth Logic
+---------------------------------------------------------------------------
+Start:
+SunRise
+  |
+  v
+Day 
+  |
+  v
+Sunset 
+  |
+  v
+Nigth
+  |
+  v
+  -> Start()
 
 
+
+
+Ligth logic
+
+light objects list 
+---->>?
+for (L a : light objects list){
+   a.draw(window);
+   ...logic
+}
 
 
 ---------------------------------------------------------------------------
@@ -383,11 +409,6 @@ Additional  |       |                    |          |             |           su
                   if select world->
                       game cycle with world Object
              } 
-
-
-
-
-
 
 
 
@@ -647,6 +668,10 @@ InTOwer:
   level wrath{
     2030{
       start apocaylps:-> ancient organic start mutation another organic(animal)
+    }  
+    ranker{
+      name:???
+
     }
   }
 
@@ -660,6 +685,37 @@ InTOwer:
 
 
 
+
+20
+
+19
+
+18
+
+.
+.
+.
+
+
+
+1
+
+
+
+.
+
+
+0
+
+.
+.
+.
+
+-1
+
+
+
+-20
 
 
 

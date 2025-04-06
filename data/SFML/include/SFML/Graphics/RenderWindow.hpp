@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2017 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2023 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -112,6 +112,35 @@ public:
     ////////////////////////////////////////////////////////////
     virtual Vector2u getSize() const;
 
+
+    ////////////////////////////////////////////////////////////
+    /// \brief Tell if the window will use sRGB encoding when drawing on it
+    ///
+    /// You can request sRGB encoding for a window by having the sRgbCapable flag set in the ContextSettings
+    ///
+    /// \return True if the window use sRGB encoding, false otherwise
+    ///
+    ////////////////////////////////////////////////////////////
+    virtual bool isSrgb() const;
+
+    ////////////////////////////////////////////////////////////
+    /// \brief Activate or deactivate the window as the current target
+    ///        for OpenGL rendering
+    ///
+    /// A window is active only on the current thread, if you want to
+    /// make it active on another thread you have to deactivate it
+    /// on the previous thread first if it was active.
+    /// Only one window can be active on a thread at a time, thus
+    /// the window previously active (if any) automatically gets deactivated.
+    /// This is not to be confused with requestFocus().
+    ///
+    /// \param active True to activate, false to deactivate
+    ///
+    /// \return True if operation was successful, false otherwise
+    ///
+    ////////////////////////////////////////////////////////////
+    bool setActive(bool active = true);
+
     ////////////////////////////////////////////////////////////
     /// \brief Copy the current contents of the window to an image
     ///
@@ -163,14 +192,9 @@ protected:
 private:
 
     ////////////////////////////////////////////////////////////
-    /// \brief Activate the target for rendering
-    ///
-    /// \param active True to make the target active, false to deactivate it
-    ///
-    /// \return True if the function succeeded
-    ///
+    // Member data
     ////////////////////////////////////////////////////////////
-    virtual bool activate(bool active);
+    unsigned int m_defaultFrameBuffer; //!< Framebuffer to bind when targeting this window
 };
 
 } // namespace sf

@@ -1,9 +1,4 @@
-#include <SFML/Audio.hpp>
-#include "files/resourses.h"
-#include "files/Abstract/World.h"
-#include "files/System/windows.h"
-#include "files/Locations/location.h"
-
+#include "linker.h"
 
 
 bool isVisibly(const FloatRect& objectsBounds,const FloatRect& viewBounds){
@@ -18,7 +13,7 @@ float randint(float start,float end){
     return dis(gen);
 }
 
-void generate(unordered_map<string , Texture>& textures,vector<PartWorld>& partes,vector<Object>& objects_top,vector<Object>& objects_bottom,World& w){
+void generate(World& w){
     float px = 0;
     float py = 0;
 
@@ -59,6 +54,7 @@ void generate(unordered_map<string , Texture>& textures,vector<PartWorld>& parte
         py += standart_size;
         
     }
+    
     w.width = w.map[0][0].size() * standart_size;
     w.height = w.map[0].size() * standart_size;
     w.height -= w.height / 3;
@@ -90,12 +86,23 @@ void generate(unordered_map<string , Texture>& textures,vector<PartWorld>& parte
               obj.hitbox.top = obj.spr.getGlobalBounds().top + obj.height * obj.hitbox.top;
 
               setSize(obj.spr,obj.width,obj.height);
+              obj.id = counterID;
               
+
               if(obj.position_level == 1){
-                 objects_top.push_back(obj);
+                 objects_top.push_back(obj.id);
               }else if(obj.position_level == 0){
-                 objects_bottom.push_back(obj);
+                 objects_bottom.push_back(obj.id);
               }
+            
+
+              
+              if(obj.light.radius != 0){
+                light_objects.push_back(&obj.light);
+              }
+              localObjects[obj.id] = obj;
+              
+              counterID++;
            }
         
            px += standart_size;
@@ -114,42 +121,33 @@ void generate(unordered_map<string , Texture>& textures,vector<PartWorld>& parte
                 textures[key] = t1;
             }
         }
+
+        
+        if(i.light.radius){
+            light_objects.push_back(&i.light);
+        }
+
     }
 }
 
 
 int main() {
-    
- 
     bool isGame = false;
     bool isMenu = true;
     bool IsNotGenerate = true;
     string path_to_save;
     int page = 0;
     
-    
     World world;
     Texture background_texture;
     Sprite background_sprite;
 
-    unordered_map<string,Texture> textures;
-    vector<PartWorld> partes;
-
-    unordered_map<int,Object> objects;
-
-    vector<Object> objects_top;
-    vector<Object> objects_bottom;
-    
-    vector<Item> items;
-
-    vector<Essence> essences;
-
-    vector<Projectile> projectiles;
 
     srand(time(0));
     
     int randomNumber = rand() % 3 + 1; 
     MainMenu mainmenu{randomNumber};
+
 
 
     Sprite cObject;
@@ -164,11 +162,12 @@ int main() {
     
 
     Sprite CoverSprite(lightTexture.getTexture());
+    
     CoverSprite.setPosition(0,0);
 
 
-    Clock T;
-
+    Clock clockT;
+    Clock counterTime;
     
     
     while(window.isOpen()){
@@ -178,193 +177,203 @@ int main() {
                 window.close();
             }
         }
-        Vector2i mousePos = Mouse::getPosition(window);
-        
+        Vector2f mousePos = Vector2f(Mouse::getPosition(window));
+
         window.clear();
-        
+
         if(isGame){
-            
-                if(path_to_save == "new"){    
-                    
+            if(path_to_save == "new"){  
+// World parametrs - start
+
+
+  //init functions start
+
+  init_db();
+
+  //init functions end
+
+
+
                     if(IsNotGenerate){
-                       world = World{"Episode 0",1,{  }};
-                       world.player = PLAYER;
-                       generate(textures,partes,objects_top,objects_bottom,world);
-                       setSize(world.player.spr,world.player.width,world.player.height);
+                     
+                        world = World{"Episode 0",1,{  }};
+                        world.player = PLAYER;
+                        world.player.light = Global_light_list[0];
+                        light_objects.push_back( &world.player.light);
+                        generate(world);
+                        world.player.spr.setPosition(0,0);
+                        setSize(world.player.spr,world.player.width,world.player.height);
+                        IsNotGenerate = false; 
+                        counterTime.restart();   
+                        world.red = 25;
+                        world.green = 25;
+                        world.blue = 25;
+                        world.opacity = 255; 
 
-                       IsNotGenerate = false;     
                     } 
+                   
                     
-
-                    // Day <_> Night - start
-
-
-                    // Day <_> Night - end
-
-
-                    // 
-                    if(world.player.spr.getPosition().x >= world.width){
+                    if(world.player.spr.getPosition().x > world.width){
                         world.player.spr.setPosition(0,world.player.spr.getPosition().y );     
                     }
                     if(world.player.spr.getPosition().x < 0){
                         world.player.spr.setPosition(world.width,world.player.spr.getPosition().y );
                     }
-
-                    if(world.player.spr.getPosition().y >= world.height){
+                    if(world.player.spr.getPosition().y > world.height){
                         world.player.spr.setPosition(world.player.spr.getPosition().x,0);     
                     }
                     if(world.player.spr.getPosition().y < 0){
                         world.player.spr.setPosition(world.player.spr.getPosition().x,world.height);
                     }
+                
+// World parametrs - end
 
-                // Draw objects - start
-                    FloatRect viewBounds(
-                       camer.getCenter() - camer.getSize() / 2.f,
-                       camer.getSize()                          
-                    );
+
+// Draw objects - start
+                    FloatRect viewBounds(camer.getCenter() - camer.getSize() / 2.f,camer.getSize());
                     
-
                     if(world.essences.size() > 0){
                         for(auto& e : world.essences){
                         // Draw partes world - start
                         for(auto& p : partes){
                             if(isVisibly(p.spr.getGlobalBounds(),viewBounds)){
-                                renderObject(p.spr);
+                                window.draw(p.spr);
                             }            
                         }
                         // Draw partes world - end
                         
                         // Draw objects_top - start
                         
-                        for(auto& o : objects_top){
+                        for(auto& i : objects_top){
+                            Object o = localObjects[i];
                             if ( isVisibly(o.spr.getGlobalBounds() , viewBounds) ) {
-                                renderObject(o.spr);
+                               window.draw(o.spr);
                             }
+                            ObjectsDB[o.IdFunc](o,e);
                         }
 
-                        // Draw object_top - end
+                        //  Draw object_top - end
 
 
-                        // All essences (player) - start
+// All essences (player) - start
                         e.spr.setTexture(textures[ path_to_img::Player_images[ e.images_numbers[e.counter] ] ]);
                         setSize(e.spr,e.width,e.height);
                         
                         if(isVisibly(e.spr.getGlobalBounds(),viewBounds)){
-                            e.behaivor(window);
+                            EssencesLambdaDB[e.behavior_id](e);
                         }
+                        EssencesLambdaDB[e.behavior_id](e);
 
                         world.player.spr.setTexture(textures[ path_to_img::Player_images[ world.player.images_numbers[world.player.counter] ] ]);
-                        world.player.behaivor(window);
                         
-                        // All essences (player) - end
+                        
+// All essences (player) - end
 
-                        // Draw object_bottom - start 
-                        for(auto& o : objects_bottom){
+// Draw object_bottom - start 
+                        for(auto& i : objects_bottom){
+                            Object o = localObjects[i];
                             if ( isVisibly(o.spr.getGlobalBounds() , viewBounds) ) {
-                                renderObject(o.spr);
+                                window.draw(o.spr);
                             }
+                            ObjectsDB[o.IdFunc](o,e);
                         }
-                        // Draw object bottom - end
-                    }                       
+                    }
+// Draw object bottom - end                      
                     } else {
-                        // Draw partes world - start
+                        
+// Draw partes world - start
                         for(auto& p : partes){
                             if(isVisibly(p.spr.getGlobalBounds(),viewBounds)){
-                                renderObject(p.spr);
+                                window.draw(p.spr);
                             }            
+
                         }
-                        // Draw partes world - end
-                         
+// Draw partes world - end
+            
 
-                        // Draw object_bottom - start 
-                        for(auto& o : objects_bottom){
+
+// Draw object_bottom - start 
+                        for(auto& i : objects_bottom){
+                            Object o = localObjects[i];
                             if ( isVisibly(o.spr.getGlobalBounds() , viewBounds) ) {
-                                renderObject(o.spr);
-                                FloatRect bounds = o.hitbox;
-                                RectangleShape border;
-                                border.setSize(Vector2f(bounds.width,bounds.height));
-                                border.setPosition(bounds.left,bounds.top);
-                                border.setFillColor(Color::Transparent);
-                                border.setOutlineColor(Color::Red);
-                                border.setOutlineThickness(1.0f);
-                                renderObject(border);
-                                o.Func(world.player,objects_top,objects_bottom,projectiles,window);
-
+                                window.draw(o.spr);
                              }
+                             ObjectsDB[o.IdFunc](o,world.player);
                           }
-                        // Draw object bottom - end
+// Draw object bottom - end
                                             
                         
-                        // (player) - start
+// (player) - start
 
                         world.player.spr.setTexture(textures[ path_to_img::Player_images[ world.player.images_numbers[world.player.counter] ] ]);
-                        world.player.behaivor(window);
+                        EssencesLambdaDB[world.player.behavior_id](world.player);
 
-                        // (player) - end
+// (player) - end
                         
-                        // Draw objects_top - start
+// Draw objects_top - start
                         
-                        for(auto& o : objects_top){
+                        for(auto& i : objects_top){
+                            Object o = localObjects[i];
                             if ( isVisibly(o.spr.getGlobalBounds() , viewBounds) ) {
-                                o.Func(world.player,objects_top,objects_bottom,projectiles,window);
-                                FloatRect bounds = o.hitbox;
-                                RectangleShape border;
-                                border.setSize(Vector2f(bounds.width,bounds.height));
-                                border.setPosition(bounds.left,bounds.top);
-                                border.setFillColor(Color::Transparent);
-                                border.setOutlineColor(Color::Red);
-                                border.setOutlineThickness(1.0f);
-                                renderObject(border);
-                                renderObject(o.spr);
+                                window.draw(o.spr);
                             }
+                            ObjectsDB[o.IdFunc](o,world.player);
                         }
-                        // Draw object_top - end
-
-                        cout << "top - " << objects_top.size() << " --- "
-                        << "bottom - " << objects_bottom.size() << endl;
+// Draw object_top - end
                         
                     }
-
-
-
-                // Draw objects - end
-
-                    lightTexture.clear(Color(world.red ,world.green , world.blue, world.opacity));
                     
-                    CoverSprite.setPosition(Vector2f(world.player.spr.getPosition().x - WIDTH / 2 , world.player.spr.getPosition().y - HEIGHT / 2));
-                    window.draw(CoverSprite);
+// Day <_> Night - start
+                    lightTexture.clear(Color(world.red,world.green,world.blue,world.opacity));
+                    
+                    CoverSprite.setPosition(sf::Vector2f(
+                        world.player.spr.getPosition().x - WIDTH / 2,
+                        world.player.spr.getPosition().y - HEIGHT / 2
+                    ));
+
+                   
+
+                    for(auto* light : light_objects){
+
+                        Vector2f cameraOffset(light->circle.getPosition().x - WIDTH / 2, light->circle.getPosition().y - HEIGHT / 2);
+
+                        light->circle.setOrigin(light->radius,light->radius);
+                        light->circle.setPosition(light->circle.getPosition() - cameraOffset);
+                        lightTexture.draw(light->circle, sf::BlendAlpha);  
+
+                    }
+
+                    lightTexture.display();
+                    window.draw(CoverSprite, BlendMultiply);
+
+// Day <_> Night - end
 
                     camer.setCenter(world.player.spr.getPosition());
-                
+                 
                     window.draw(cObject);
             
                     window.setView(camer);
 
-                }else{
-                   // Load save world from bin file - start
-                    
-                   // end
-                }
-            
+            }else{
 
+            }
         }else{  
             mainmenu.BackgroundRender();
             if(page == 0){
                 page = mainmenu.update(mousePos);
-            }else if(page == 1){
+            }
+            else if(page == 1){
                 isGame = true;
                 path_to_save = "new";
             }else if(page == 2){
                 page = mainmenu.updateSaves(mousePos,path_to_save,isGame);
-                
             }else if(page == 3){
                 page = mainmenu.updateSettings(mousePos);
-            }else if(page == 4){
-                break;
-            }
-        }
+            }else if(page == 4)break;
         
+        }
         window.display();
+
     }
     return 0;
 }

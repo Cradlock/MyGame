@@ -4,6 +4,7 @@
     z-index: 101;
     font-size: 13px;
     font-family: 'Lucida Grande',Geneva,Helvetica,Arial,sans-serif;
+    display: table;
 }
 
 .tabs2 {
@@ -16,7 +17,7 @@
 .tablist {
     margin: 0;
     padding: 0;
-    display: table;
+    display: block;
 }
 
 .tablist li {
@@ -47,7 +48,7 @@
 .tablist a:hover {
     background-image: url('tab_h.png');
     background-repeat:repeat-x;
-    color: #fff;
+    color: white;
     text-shadow: 0px 1px 1px rgba(0, 0, 0, 1.0);
     text-decoration: none;
 }
@@ -55,6 +56,7 @@
 .tablist li.current a {
     background-image: url('tab_a.png');
     background-repeat:repeat-x;
-    color: #fff;
+    color: white;
     text-shadow: 0px 1px 1px rgba(0, 0, 0, 1.0);
 }
+
