@@ -80,7 +80,9 @@ public:
 
 
     int behavior_id;
-    Light light;
+    
+    shared_ptr<Light> light;
+        
 
     Essence();
     
@@ -107,7 +109,6 @@ public:
            float hun,
            float th,
            int beh_id
-
     );
 
 

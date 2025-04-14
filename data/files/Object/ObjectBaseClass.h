@@ -46,14 +46,14 @@ public:
     int position_level;
     int IdFunc;
 
-    Light light;
+    shared_ptr<Light> light;
+    
 
     Object();
 
     Object(int l,string t,float e,vector<int> images,float w,float h,int IdTouch);
 
-    static Object WithLightObject(int l,string t,float e,vector<int> images,float w,float h,int IdTouch,int light_num);
-
+   
     Object(int l,string t,float e,vector<int> images,float w,float h,FloatRect rect,int IdTouch);
 
     Object(int l,string t,float e,vector<int> images,float w,float h,vector<Effect> efs,vector<Item> its,int IdTouch);
@@ -90,6 +90,6 @@ public:
 
 extern vector<Object> Global_Objects_list;
 
-extern vector<Light> Global_light_list;
+
 
 #endif

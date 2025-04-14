@@ -78,7 +78,8 @@ Essence PLAYER = {1, 0,0, 5,15,
         Property{50.f,1,100,0.1},
         Property{0.25,0,15,0.08},
         89.f,0.f,0.f,
-        1};
+        1
+};
 
 
 unordered_map<int,Essence> GLOBAL_ESSENCES_list = {};

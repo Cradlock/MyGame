@@ -29,13 +29,10 @@ public:
 class Light : public Base{
     public:
       CircleShape circle;
-      float radius;
-      Color color; 
+     
     Light(float rad,Color color);
 
     Light();
-
-   
 };
 
 
@@ -88,6 +85,6 @@ class MainMenu{
         void BackgroundRender();
     };
     
-
+extern vector<Light> Global_light_list;
 
 #endif

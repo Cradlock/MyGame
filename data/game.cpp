@@ -94,13 +94,15 @@ void generate(World& w){
               }else if(obj.position_level == 0){
                  objects_bottom.push_back(obj.id);
               }
-            
 
-              
-              if(obj.light.radius != 0){
-                light_objects.push_back(&obj.light);
-              }
+
+              auto light_obj = make_shared<Light>(10,Color::White);
+              obj.light = light_obj;
+              localLight.push_back(light_obj);
+
+             
               localObjects[obj.id] = obj;
+
               
               counterID++;
            }
@@ -122,16 +124,14 @@ void generate(World& w){
             }
         }
 
-        
-        if(i.light.radius){
-            light_objects.push_back(&i.light);
-        }
-
+      
     }
 }
 
 
 int main() {
+
+
     bool isGame = false;
     bool isMenu = true;
     bool IsNotGenerate = true;
@@ -168,6 +168,8 @@ int main() {
 
     Clock clockT;
     Clock counterTime;
+
+
     
     
     while(window.isOpen()){
@@ -198,9 +200,18 @@ int main() {
                      
                         world = World{"Episode 0",1,{  }};
                         world.player = PLAYER;
-                        world.player.light = Global_light_list[0];
-                        light_objects.push_back( &world.player.light);
+                        world.player.id = counterID;
+                        
+                        
+                        auto lig = make_shared<Light>(10,Color::White); 
+                        world.player.light = lig;
+                        localLight.push_back(lig);
+                        
+                        
+                        counterID++;
                         generate(world);
+                        
+
                         world.player.spr.setPosition(0,0);
                         setSize(world.player.spr,world.player.width,world.player.height);
                         IsNotGenerate = false; 
@@ -333,14 +344,8 @@ int main() {
 
                    
 
-                    for(auto* light : light_objects){
-
-                        Vector2f cameraOffset(light->circle.getPosition().x - WIDTH / 2, light->circle.getPosition().y - HEIGHT / 2);
-
-                        light->circle.setOrigin(light->radius,light->radius);
-                        light->circle.setPosition(light->circle.getPosition() - cameraOffset);
+                    for(auto& light : localLight){
                         lightTexture.draw(light->circle, sf::BlendAlpha);  
-
                     }
 
                     lightTexture.display();

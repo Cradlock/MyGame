@@ -16,6 +16,11 @@
 
 extern unordered_map<int,Object> localObjects;
 
+
+extern vector<shared_ptr<Light>> localLight;
+
+
+
 extern vector<int> objects_top;
 extern vector<int> objects_bottom;
 
@@ -27,10 +32,6 @@ extern vector<Item> items;
 extern vector<Essence> essences;
 
 extern vector<Projectile> projectiles;
-
-extern vector<Light*> light_objects;
-
-
 
 extern void init_db();
 

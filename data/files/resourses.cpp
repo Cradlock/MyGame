@@ -4,14 +4,12 @@
 Light::Light(float r,  Color col) {
     CircleShape circ;
     circle = circ;
-    radius = r;
-    this->color = col;
-    circle.setFillColor(color);
-    circle.setRadius(radius);
+    circle.setFillColor(col);
+    circle.setRadius(r);
 };
 
 Light::Light(){
-    this->radius = 0;
+    
 };
 
 
@@ -261,4 +259,6 @@ int MainMenu::updateSaves(Vector2f mousePos,string& path_to_save,bool& isGame){
 }
 
 
-
+vector<Light> Global_light_list = {
+   Light(10,Color::White)
+};
