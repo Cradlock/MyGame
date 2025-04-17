@@ -87,7 +87,7 @@ vector<Object> Global_Objects_list = {
     
     Object{0,"Grass ",1.5,{ 2 }, 25.f , 10.f,1},  //2
     
-    Object(0,"Brown mushroom",1.5,{ 3 },  5.f , 6.f , 1), //3
+    Object(0,"Brown mushroom",1.5,{ 3 },  5.f , 6.f , 2), //3
      
     Object{0,"Brown mushrooms",3.0,{ 4 }, 5.f , 8.f ,1}, //4
 };
