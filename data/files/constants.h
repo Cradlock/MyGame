@@ -39,6 +39,7 @@ extern float DAY_LENGTH;
 extern float DELTA_TIME;
 extern const float timeSpeed;
 
+
 extern int experience;
 
 extern unsigned int counterID;
@@ -55,6 +56,7 @@ void OnCursor(Text& b,bool& t,Vector2f mousePos);
 void SetWhite(Text& t);
 
 void SetBlack(Text& t);
+
 
 
 

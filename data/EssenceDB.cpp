@@ -53,10 +53,12 @@ void init_essence_lambdas(){
         }
 
         
-        Vector2f cameraOffset(self.spr.getPosition().x - WIDTH / 2, self.spr.getPosition().y - HEIGHT / 2);
 
-        self.light->circle.setPosition(self.spr.getPosition() -   cameraOffset);
-        self.light->circle.setFillColor(Color::White);
+        self.light->circle.setPosition(self.spr.getPosition());
+        self.light->circle.setRadius(self.sight);
+        self.light->circle.setOrigin(self.light->circle.getRadius(), self.light->circle.getRadius());
+        self.light->circle.setScale(1.f, 1.f);
+        self.light->circle.setFillColor(Color(255,255,255,100));
         
         window.draw(self.spr);
     };

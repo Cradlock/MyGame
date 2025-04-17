@@ -36,18 +36,18 @@ void init_objects_lambdas(){
     
             
         }
-        Vector2f cameraOffset(self.spr.getPosition().x - WIDTH / 2, self.spr.getPosition().y - HEIGHT / 2);
-    
-        self.light->circle.setPosition(960,510);
-        
-        self.light->circle.setFillColor(Color::White);
+      
     
     };
 
 
     ObjectsDB[2] = [](Object& self,Essence& esse){
-   
-    
+        
+        self.light->circle.setPosition(self.spr.getPosition());
+        self.light->circle.setRadius(4);
+        self.light->circle.setOrigin(self.light->circle.getRadius() / 2, self.light->circle.getRadius() / 2);
+        self.light->circle.setFillColor(Color(255,255,255,45));
+        
     };
     
 }

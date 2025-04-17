@@ -96,8 +96,9 @@ void generate(World& w){
               }
 
 
-              auto light_obj = make_shared<Light>(10,Color::White);
+              auto light_obj = make_shared<Light>(0,Color::White);
               obj.light = light_obj;
+              
               localLight.push_back(light_obj);
 
              
@@ -129,6 +130,11 @@ void generate(World& w){
 }
 
 
+
+
+
+
+
 int main() {
 
 
@@ -137,6 +143,8 @@ int main() {
     bool IsNotGenerate = true;
     string path_to_save;
     int page = 0;
+
+    
     
     World world;
     Texture background_texture;
@@ -158,9 +166,8 @@ int main() {
 
     
     RenderTexture lightTexture;
-    lightTexture.create(WIDTH, HEIGHT);
-    
-
+    lightTexture.create(100,100);
+   
     Sprite CoverSprite(lightTexture.getTexture());
     
     CoverSprite.setPosition(0,0);
@@ -169,6 +176,9 @@ int main() {
     Clock clockT;
     Clock counterTime;
 
+
+    
+    window.setFramerateLimit(120);
 
     
     
@@ -193,25 +203,26 @@ int main() {
   init_db();
 
   //init functions end
-
-
-
-                    if(IsNotGenerate){
-                     
+                    if(IsNotGenerate){ 
                         world = World{"Episode 0",1,{  }};
+                       
                         world.player = PLAYER;
                         world.player.id = counterID;
                         
                         
                         auto lig = make_shared<Light>(10,Color::White); 
+
                         world.player.light = lig;
+
                         localLight.push_back(lig);
-                        
                         
                         counterID++;
                         generate(world);
-                        
 
+                        lightTexture.create(world.width,world.height);
+                        CoverSprite.setTexture(lightTexture.getTexture());
+                        CoverSprite.setTextureRect(IntRect(0, 0, world.width, world.height));
+                        
                         world.player.spr.setPosition(0,0);
                         setSize(world.player.spr,world.player.width,world.player.height);
                         IsNotGenerate = false; 
@@ -222,20 +233,11 @@ int main() {
                         world.opacity = 255; 
 
                     } 
+
+
                    
                     
-                    if(world.player.spr.getPosition().x > world.width){
-                        world.player.spr.setPosition(0,world.player.spr.getPosition().y );     
-                    }
-                    if(world.player.spr.getPosition().x < 0){
-                        world.player.spr.setPosition(world.width,world.player.spr.getPosition().y );
-                    }
-                    if(world.player.spr.getPosition().y > world.height){
-                        world.player.spr.setPosition(world.player.spr.getPosition().x,0);     
-                    }
-                    if(world.player.spr.getPosition().y < 0){
-                        world.player.spr.setPosition(world.player.spr.getPosition().x,world.height);
-                    }
+                  
                 
 // World parametrs - end
 
@@ -336,14 +338,7 @@ int main() {
                     
 // Day <_> Night - start
                     lightTexture.clear(Color(world.red,world.green,world.blue,world.opacity));
-                    
-                    CoverSprite.setPosition(sf::Vector2f(
-                        world.player.spr.getPosition().x - WIDTH / 2,
-                        world.player.spr.getPosition().y - HEIGHT / 2
-                    ));
-
                    
-
                     for(auto& light : localLight){
                         lightTexture.draw(light->circle, sf::BlendAlpha);  
                     }
