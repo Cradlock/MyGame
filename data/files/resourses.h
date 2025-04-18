@@ -35,8 +35,6 @@ class Light : public Base{
     Light();
 };
 
-
-
 namespace path_to_audio{
 
 };
@@ -85,6 +83,12 @@ class MainMenu{
         void BackgroundRender();
     };
     
+    
+
 extern vector<Light> Global_light_list;
+
+class PathManager{
+    
+};
 
 #endif

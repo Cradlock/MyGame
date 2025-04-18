@@ -1,3 +1,52 @@
+files structures 
+data / 
+
+   audio /
+
+
+   fonts /
+
+
+   images /
+      section 1 /
+        img.png 
+        img.jpg
+      section 2 /
+        rest.png 
+        magic_circle.jpg 
+
+   files /
+      game logic files...
+      constants  {cpp / h}
+      resourses  {cpp / h}
+
+      PathDB.json 
+      
+
+   shaders /
+      base.frag
+
+   scripts /
+      .lua files 
+
+
+    templates /
+      .json ...files
+   
+   
+   links. {cpp / h}
+   linker. {cpp / h}
+   main.exe 
+
+
+
+
+
+
+
+
+
+
         0                        2                                                     2                                                  3                                     
     LIFE Ojbects                Item                                                 Effect                                         Unlife Objects                                            
         |                         |                                                       |                                               |            
@@ -97,26 +146,8 @@ Game cycle
 
 if isGame;
 
------------------------------------------------------------------>
 
-(Lambda Functions (save functions)) -> massive_lambda_functions
-
-
-
-values in lambda ->
-
-Essence& self,RenderWindow& window,
-unordered_map<string,Texture>& textures,
-vector<Object>& allObjects,
-vector<Essence>& allEssences
-
-
-
-
-
-
-
-------------------------------------------------------
+------------------------------------------------
 list<class Temp> temp
 
 class Spell/Projectile

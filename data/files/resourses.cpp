@@ -71,11 +71,6 @@ namespace path_to_img {
 
 
 
-
-    
-
-
-
 bool OnCursor(Text& b,Vector2f mousePos){
     if(b.getGlobalBounds().contains(mousePos)){
         return true;

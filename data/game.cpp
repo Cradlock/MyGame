@@ -132,17 +132,12 @@ void generate(World& w){
 
 
 
-
-
-
 int main() {
 
 
-    // Shader shader;
-    // if(!shader.loadFromFile("shaders/base.frag",Shader::Fragment)){
-    //     cout << "Erro in shaders" << endl;
-    //     return -1;
-    // }
+    Shader shader;
+    if (!shader.loadFromFile("shaders/standart/glow.frag", sf::Shader::Fragment))
+    std::cerr << "Ошибка при загрузке шейдера!" << std::endl;
 
 
     bool isGame = false;
@@ -182,8 +177,6 @@ int main() {
 
     Clock clockT;
     Clock counterTime;
-
-
     
     window.setFramerateLimit(120);
 
@@ -238,11 +231,6 @@ int main() {
                         world.opacity = 255; 
 
                     } 
-
-
-                   
-                    
-                  
                 
 // World parametrs - end
 
@@ -320,8 +308,6 @@ int main() {
                         
 // (player) - start
                   
-                      
-
                         world.player.spr.setTexture(textures[ path_to_img::Player_images[ world.player.images_numbers[world.player.counter] ] ]);
                         EssencesLambdaDB[world.player.behavior_id](world.player);
                         window.draw(world.player.spr);
@@ -345,7 +331,17 @@ int main() {
                     lightTexture.clear(Color(world.red,world.green,world.blue,world.opacity));
                    
                     for(auto& light : localLight){
-                        lightTexture.draw(light->circle);  
+                        if(light->circle.getRadius() != 0){
+                            shader.setUniform("resolution",Vector2f(window.getSize()));
+                            shader.setUniform("texture",Shader::CurrentTexture);
+                            Vector2f center = light->circle.getPosition() + sf::Vector2f(light->circle.getRadius(), light->circle.getRadius());
+                            shader.setUniform("center",center);
+                            shader.setUniform("radius",light->circle.getRadius());
+                            Color c = light->circle.getFillColor();
+                            shader.setUniform("color",Glsl::Vec4( c.r / 255.f ,c.g / 255.f ,c.b / 255.f  ,c.a / 255.f ));
+                            lightTexture.draw(light->circle,&shader);
+
+                        }  
                     }
 
                     lightTexture.display();

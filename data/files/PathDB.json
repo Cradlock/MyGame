@@ -1,0 +1,17 @@
+{
+    "images":[
+
+    ],
+    "audios":[
+
+    ],
+    "templates":[
+        
+    ],
+    "shaders":{
+        "standart":{
+            "glow":"glow.frag"
+        }
+    }
+
+}

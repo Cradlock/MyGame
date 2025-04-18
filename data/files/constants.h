@@ -21,6 +21,7 @@
 #include <utility>
 #include <stdexcept>
 
+
 #define Title "Nexus"
 
 using namespace sf;
