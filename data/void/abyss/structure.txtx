@@ -1,0 +1,16 @@
+
+
+--->
+   
+   Window--->
+   Render
+      ---->
+         GPU(detect,init) 
+         Sprite,Texture,Buffer
+   Audio--->
+   Inet--->
+   Time--->
+   Input---> обратобтка сообщений от window
+
+
+

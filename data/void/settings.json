@@ -1,0 +1,20 @@
+{
+    "fps":120,
+    "select-shader":"standart",
+    "volume-out":100,
+    "volume-nps":100,
+    "volume-object":100,
+    "volume-items":100,
+    "brigthess":100,
+    "resolution":[1080,960],
+    "sensivity":65,
+    "key-binds":{
+        "top":"W",
+        "down":"S",
+        "left":"A",
+        "right":"D",
+        "jump":"Space",
+        "dash":"Alt"
+    }
+    
+}

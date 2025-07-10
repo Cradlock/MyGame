@@ -45,7 +45,8 @@
         "sstream": "cpp",
         "stdexcept": "cpp",
         "streambuf": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "ranges": "cpp"
     },
     "terminal.integrated.env.windows": {
             "PATH": "C:\\mingw13.1.0\\bin;C:\\other\\paths;${env:PATH}"

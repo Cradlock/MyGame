@@ -1,461 +1,3 @@
-files structures 
-data / 
-
-   audio /
-
-
-   fonts /
-
-
-   images /
-      section 1 /
-        img.png 
-        img.jpg
-      section 2 /
-        rest.png 
-        magic_circle.jpg 
-
-   files /
-      game logic files...
-      constants  {cpp / h}
-      resourses  {cpp / h}
-
-      PathDB.json 
-      
-
-   shaders /
-      base.frag
-
-   scripts /
-      .lua files 
-
-
-    templates /
-      .json ...files
-   
-   
-   links. {cpp / h}
-   linker. {cpp / h}
-   main.exe 
-
-
-
-
-
-
-
-
-
-
-        0                        2                                                     2                                                  3                                     
-    LIFE Ojbects                Item                                                 Effect                                         Unlife Objects                                            
-        |                         |                                                       |                                               |            
-    -----------                   |                                                       ?                                               |      
-    |         |             Thing-|                                                       |                                               |        Top
-    |         |             |     |                                                       |                                              / \      /   /\                                                     
-    |         |             |     |                                                       ?                                             /   \    /    ||    
-Player        NPC      Book-|     |                                  Active(Condition)           Existance(Condition)                  /    Block     Item objects   
-              |             |     |                                        |                              |                           /       |  \    ||       
-              |      Potion-|     |-Equipment--|                           |-getInfluence                 |-InTime                   /        |   \   \/   
-              |             |     |            |-helmet         IfHaveTime-|              IfHaveInventory-|                         /         |    Average  
-              | Instruments-|     |   cuiarass-|                           |                              |-Passive            PartWorld      |              
-              |             |     |            |-leggings                                                 |                                Bottom         
-              |    Artefact-|     |     gloves-|                                                                                                             
-              |             |     |            |-boot                                                                                                       
-              |       Money-|     |     Bracer-|                           
-              |             |     |
-              |        Food-|     |
-              |                   |
-              |                   |-Accessory---| 
-    ----------------------        |             |-amulet
-    |                    |        |       Cloak-|
-    |                    |        |             |-ring
-Bosses               default_npc  |      Armlet-|
-                         |        |
-                   Quest-|        |-weapon------------
-                         |        |                  |
-              Additional-|                           |
-                         |                        ----------------------------------------------
-                   Other-|                      Near               Distant                    Other
-                                                   |-Sword               |-Bow                     |
-                                               Axe-|            Throwing-|                         |-stuff  
-                                                   |-Hammer              |-Gun                     |
-                                             Knife-|            Crossbow-|                         |-Device
-                                                   |-Spear               |-boomerang               |
-                                            Scythe-|                     |                         |-Other
-                                                   |-Fist                |                         |
-                                                                         v  
-                                                               Projectile|-> arrow/bolt/...
-
-
-
-
-
-
-
-
-
-
----------------------------------------------------------------------------------------------------
-
-Spells 
-|
-|
-|---- Projectile
-|
-|
-|---- Self
-|
-|              spawner
-|---- Summon /
-|            \
-|              essence 
-|
-|
-|---- Domain expension
-|
-|
-|
-|---- Other
-|
-
-
------------------------------------------------------------------------------------------------------------------------------------
-
-?isGame               cycle game 
-    \                /
-      game->load game  
-     /               \
-    /                 menu
-   /
-Menu --- buttons(new_game,saves,setting,exit)
-    \
-     \ ---- settings -------- buttons(exit)
-     /\
-    /  \
-   /    \
-saves    \
-          \
-         exit
-
-
-
-
-
-Game cycle
-
-if isGame;
-
-
-------------------------------------------------
-list<class Temp> temp
-
-class Spell/Projectile
--> on Active -> temp + obj class Temp 
-                      \
-                       \
-                        \ ------  create Temp obj ->  Class Spell -> (start_size,start_pos,Influence,images,effects, 
-                                                                      lambda update,lambda onCollision,stock) -> Class Temp
-
-for(auto i : temp)
-   i.update()       ---> --->   [](this){}
-
-
---------------------------------------------------------
-
-Effect conditions of activate --------- get Influence
-                            \
-                             \
-                              \
-                               If have Time
-
-Effect conditions of existance --------- in Time(have timer)
-           |                \
-           |                 \
-           |                  \
-           |                   \
-           |                    \
-        If have Item           Passive
-
---------------------------------------------------
-
-Item ->  
-   func ---- ?  Use
-   /    \ \    
-  |      \  \  
-  |       \   \    
-  |        \    ?in slot
-  ?         ?
-InHand      in Invetnory 
-
-
---------------------------------------------------------
-Take damage logic
-
-Influence obj   
-
-Example weapon sword(Physic,Bio,Soul,Magic,Energy)
-  [&](this,send_d,receive_d){
-     for(auto ef : essence.get_influence_effects_existing()){
-         ef.func(send_d,receive_d);
-     }
-     
-     Magic Damage{
-          Physic d{
-
-          }
-          Energy d{
-
-          }
-          Biology d{
-
-          }
-          Soul d{
-
-          } 
-     }
-     
-     Energy Damage{
-            
-     }
-
-
-     Physic Damage{
-
-
-     }
-
-     Biology Damage{
-
-
-     }
-     
-     Soul Damage{
-
-     }
-
-           send Effects/Item/.....
-     Other------------------------{}
-
-  }
-
---------------------------------------------------------------------------
-Structure save objects(Essence,Effect,Item,Location,)
-
-lambda functions -> save " *_LF.h"
-
-                     *
-    ---------------------------------------------------------
-    |            |               |             |            |
-    |            |               |             |            |
-    |            |               |             |            |
-    |            |               |             |            |
-  Item        Effect           Spell          World       Essence                    
-
-
---------------------------------------------------------------------------
-Logic generate World:
-
-ObjectsTextures = {Void 0 
-Ground 2 Gravel 2 Grass 3 Stone 4 Cobblestone 5 StoneTile 6 Mushroom 7 OvergrownGrass 8 
-OvergrownMushroom 9 ShallowWater  10 MediumWater  11 DeepWater 12  Dirt 13   Swamp 14    
-Lava 15 Sand 16}
-
-
-massive = {
-  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11}
-  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11}
-  {11,11,11,11,11,11,11,11,11,11,11,11,11,16,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11}
-  {11,11,11,11,11,11,11,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,11,11,11,11,11,11,11,11,11,11,11,11}
-  {11,11,11,11,11,16,16,16,16,16,16,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,16,16,16,16,16,16,16,11,11,11,11}
-  {11,11,11,16,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11,11,11}
-  {11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11,11}
-  {11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11}
-  {11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,11}
-  {11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,11}
-  {11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,11}
-  {11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,11}
-  {11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,11}
-  {11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,11}
-  {11,16,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11}
-  {11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,11,11}
-  {11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11,11}
-  {11,11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11,11}
-  {11,11,11,11,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,11,11,11}
-  {11,11,11,11,11,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,16,11,11,11,11}
-  {11,11,11,11,11,16,16,16,16,16,16,16,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,16,16,16,16,16,16,11,11,11,11,11,11}
-  {11,11,11,11,11,11,11,11,11,16,16,16,16,16,16,16,16, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,16,16,16,16,16,16,11,11,11,11,11,11,11,11,11}
-  {11,11,11,11,11,11,11,11,11,11,11,11,11,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,11,11,11,11,11,11,11,11,11, 2,11,11,11,11}
-  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,11,11,11,11,11,11,11,11, 2, 6, 2, 2,11,11,11}
-  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11, 2, 6, 6, 2, 2,11,11,11}
-  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11, 2, 5, 2, 2, 2, 2,11,11}
-  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11, 6, 6, 2, 2,11,11,11}
-  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11, 6, 7,11,11,11,11}
-  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11}
-  {11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11}
-}
-
-blocks_massive = {}
-
-strt_x = 0
-strt_y = 0
-for(int i = 0; i < massive.size();++i){
-   row = {}
-   for(int j = 0;j < massive[i].size();++i){
-        int idx = massive[i][j]
-        PartWorld obj = obj( ... ,get(Objects,idx));
-        obj.x = strt_x;
-        obj.y = strt_y
-        row.push_back(obj);
-        strt_x += 50;
-   }
-   strt_y += 50;
-   blocks_massive.push_back(row);
-   row.clear();
-}
-
-
-In Game cycle
-for(auto& e : essences){
-   for(auto& o : objects ){
-       if(intersect(e) ){
-          o.touchFunc(& e, &Objects_list, &window);
-       }
-   }
-   for(auto$ p : partes){
-
-   }
-
-}
-
-Day Nigth Logic
----------------------------------------------------------------------------
-Start:
-SunRise
-  |
-  v
-Day 
-  |
-  v
-Sunset 
-  |
-  v
-Nigth
-  |
-  v
-  -> Start()
-
-
-
-
-Ligth logic
-
-light objects list 
----->>?
-for (L a : light objects list){
-   a.draw(window);
-   ...logic
-}
-
-
----------------------------------------------------------------------------
-Logic Save Objects
-
-
-              Object --------- simple data
-                  |
-                  |                       lambda_func ( id function )
-                  |                       /
-                  |                      /
-                complex data(link to ...) 
-                                         \
-                                          \
-                                          texture  ( string , shared_ptr<Texture> )
-
-
------------------------------------------------------------------------------------------
-Behaivor logic 
-
-
-
-
-
----------------------------------------------------------------------------------
-Structure save images
-                          
-                          images
-      ---------------------------------------------------------------------------------------
-      |                |                 |                  |               |               |
-    Effect           Object            Item             Essence             Spell           System --------- Other
-      |                |                 |                  |           --------- -\               \
-      |             -----------          |                  |           |        |  \               \
--------------       |         |          |                  |        circles     | projectiles       \  
-|           |     Block     PartWorld    |     Player--------------              |                   Backgrounds
-Additional  |       |                    |          |             |           summon_guards
-            |       |-Top                |          |            NPC 
-          icons     |                    |        Bosses       ----------
-                    |                    |                    /    |     \
-            Average-|                    |                   /     |      \
-                    |                    |                  /      |       \
-                    |-Bottom             |              Quest    Other    Additional
-                                         |
-                                         |
-                     -----------------------------------------------------accessory
-                     |                   |                     |           
-                  Thing               Weapon                Equipment   
-
-
-
-
---------------------------------------------------------------------------------------------------------------
-
-?Play 
-   \
-    \
-     \
-      \
-       \
-        -----> If(Have File in saves) select  2 save world -generate else ( create new object world )  -generate
-
-?setting
-    \
-     \  
-      \
-       \
-        \
-         \
-          ------>  Open setting menu ()
-
-
-?load world  
-     \
-      \
-       \
-        \
-         \
-          \
-           \
-            \
-             ------> Open list worlds {
-                  if select world->
-                      game cycle with world Object
-             } 
-
-
-
--------------------------------------------------------------------
-Load World logic
-
-
-
-generate cycle -
-                  \
-                   \
-                    \-> generate map (save textures in unordered_map )
-                     \
-                      \->generate objects (save textures in unordered_map )
-
-
 
 
 
@@ -758,3 +300,379 @@ InTOwer:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----> New logic 
+
+
+-->src ->  
+    content ->
+      base.cpp 
+      BaseClass.cpp
+      Entities.cpp 
+      Abstract.cpp 
+
+    settings.cpp -> Настройки : class SettingsManager : PathManager -> настройка констант 
+    data.cpp -> основной код PathManager -> весь игровой цикл
+
+    pack.cpp -> Всякие полезные функции (Изменение размера улучешная настройка выдача случайного числа)
+    base.cpp -> Ссылки библиотеки импорты 
+   
+    settings.json  ->  Настройки игры
+    pathes.sql -> хранение путей
+
+
+
+base classes -> 
+    
+    PathManager
+    GameManager
+    SettingsManager
+    
+
+
+
+--> data-folders 
+
+
+mod.cpp ->   struct Property( min , max , value , time  )
+        
+        Conditions <-  BaseClass.cpp   ->   Influence
+          
+                                                
+        Entity--------Block                                 Abstract                              Quest 
+       /|   |  \                                              |     \
+     /  |   |    \                                          Effect    Skill/Spell
+   /    |   |      \                                 
+ Items  |  Object  Essence                         
+        |
+    Projectiles                               
+
+
+                
+          
+         
+BaseClass {
+   
+}
+         
+
+
+cooord system {
+  x,
+  y,
+  z-level,
+}
+
+
+
+
+
+
+
+
+                                                              Exit 
+                                                             /                       [ main cycle game (mix added mods) ]
+game logic ->    Splash screen(load resourses) -> Main Menu  ------> Game start -> Game Cycle 
+                                                             \                            |
+                                                              Button click                |
+                                                                /    |    \               |
+                                                               /     |     \              |
+                                                          Settings   |     Start game-----|  
+                                                            /        |          |
+                                                           /      Game saves    |
+                                                          /          |          |
+                                                         /           |          |
+                                                        /            |-----------
+                                                    Settings.lua                  
+
+
+
+Splash Draw | Load resourses ->  Read mods | 
+
+
+
+UI logic:
+
+                                Main carcass 
+                                     |
+                                     |
+                                  Main Menu
+                                     |     \
+                                     |       \
+                                {pocket menu}  \
+                                     |        Page  
+                                     |
+                                  Game cycle 
+
+
+Influence logic ->
+  
+        Physic         
+           |
+           Mechanical -> Cut | Prick | Blunt 
+           |
+           Thermal -> heat | cool 
+           |
+           Acoustic -> Frequency | Volume
+           |
+           Electromagnetic -> Voltage | Power
+
+        Bio 
+           |
+           Infection -> 
+
+        Mana 
+           |
+           Mana -> count_mana | mana_power 
+           |
+           Another influence -> {}
+
+        Psycho 
+           |
+           Mind -> mind_force 
+           |
+           Volition -> volition_force
+
+        Soul / Story 
+           |
+
+
+
+Integrity logic -> 
+     class Integrity {
+        map<{Bio,Physic,Mana}Part 
+
+     }
+        
+
+
+  Entity
+      | 
+      | Integrity xp -> (   ) 
+      | 
+      | Property (stamina,mind,mana,bio)
+      |
+      | Influence ( Physic,Mana,Bio,Mind )
+      |
+      
+
+
+Entity create exmaple: 
+{
+  "game-content":{
+      "Integrity":{
+        "bio":80,
+        "physic":15,
+        "mana":5
+      },
+      "Properties":{
+        "bioParts":
+      }
+
+  }
+}
+
+
+
+
+{
+  "Shield":{
+    "game-content":{
+      "Integrity":{
+        "physic":100 
+      }
+    }
+  }
+}
+
+
+
+
+
+                 WORLD ---Schematic 
+                   |  \
+                   |   |-------Conditions {     }  
+                   |\
+                   | \
+                   |  PartWorld
+                   |  
+                Entity 
+                   |\
+                   |  \ 
+                  /|    \
+                /  |   Objects 
+              /    | 
+          Location |
+                   |
+                Essence 
+                   /\
+                  /  \
+                 /    \
+              Player  Npc 
+
+
+
+
+
+
+
+
+World Cycle -----  constant functions{
+                      *{all entity}.behaivor()
+                      *Plot.conditions() 
+                   }
+
+|
+|         *knight
+|*Wolf                         *Home 
+|           *Tree     
+|  *Player 
+|                     *Sword altar 
+|*stone      
+|          *Lake 
+|                       *elf          
+---------------------------------------------------------n
+Word Condition               *zombie <- check Integrity  |   ->    action after check:  action effect|action/virtual effect|virtual effect|delete/create enitity    
+---------------------------------------------------------n 
+                  |
+                Zombie 
+    |
+Village 
+
+
+         |
+        chicken
+
+ . . . .................
+  . .. ... ..........
+    . .. . ...
+       . . . 
+        . . 
+         . Next iteration
+
+
+
+
+
+
+
+Influence object exmaples:
+   
+
+    <Player{with axe}>    attack     <tree> 
+    Programm--------------------
+        AXE create -> Missile  
+                             \ 
+                              Ojbect have Influence( cut = 45 , blunt = 30, pickl = 3 )
+                        
+                        axe{missile} Influence X tree Integrity
+                        tree.integrity.influence(tree,Influence axe missile)
+
+
+                        
+
+
+
+
+
+mod structure -> 
+  data.json -> all config mods{
+    "Folder Mod":{
+      "type": { afterLoad or beforeLoad } // only one type 
+      "heavy-data": ... ,
+      "scripts": ... ,
+    }
+    .....
+  }
+
+
+
+
+
+
+
+
+
+
+
+structure: beforeLoad mod
+  Main.lua or Main.as  
+   |
+   |-> void main() --- Инициализация всех переменных для работы а также всех ресурсов: Работа с MemoryManager через оболочку ModManager 
+   | [при инициализации какой либо переменной (обычно это UI обьекты) через оболочку класса ModManager нужные тяжелые данные незаметно для мододела загружается при помощи MemoryManager  ]
+
+Before Load: example -> {
+
+  function main()
+
+      btnGameStart,btnGameExit,btnGameSettings,btnGameDownloads = getStandartButtons();
+
+      btnGameStart.setBackground( Color(123,123,123) );
+      btnGameStart.setFontSize( "20px" );
+     
+      githubBtn = IconButton( "icons/github.png" );
+      githubBtn.size( "64px" , "64px"  );
+      githubBtn.setPosition( Parent::topLeft );
+      
+      githubBtn.margin(  "20px"  );
+      githubBtn.padding( "15px" );
+
+      githubBtn.onTap(
+        SysCommand("start https://github.com/cradlock");
+      ); 
+
+      githubBtn.hover(
+          "2s","ease",() => {
+            githubBtn.setBackground( Color(255,255,255) );
+
+          }  
+      );
+      
+
+      MainBackground = getMainBackgroun();
+      MainBackground.setAnimatedBackground("wps/animate.gif");
+
+      
+
+      
+  end 
+
+}
+
+
+
+
+structure: afterLoad mod 
+  |
+  |-> void init()
+  |
+  |-> void main() ---|
+                     |
+      void add()   or   void set()  or   void del()
+                    -|-
+  |
+  |
+  |-> void endGame()
+  |

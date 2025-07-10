@@ -3,7 +3,10 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/data/sol/**",
+                "${workspaceFolder}/data/lua/src",
+                "${workspaceFolder}/data/nlohmann"
             ],
             "defines": [
                 "_DEBUG",

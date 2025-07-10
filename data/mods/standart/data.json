@@ -1,0 +1,12 @@
+{
+    "standart_menu":{
+        "type":"beforeLoad",
+        "heavy-data":"ui_elements",
+        "scripts":"scripts"
+    },
+    "standart_test_level":{
+        "type":"afterLoad",
+        "heavy-data":"media",
+        "scripts":"src"
+    }
+}
