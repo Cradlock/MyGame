@@ -54,6 +54,7 @@ namespace Resources {
     inline const std::string path_mods = "./mods";
     inline const std::string path_setting  = "./void/settings.json";
     inline const std::string path_system  = "./void/ultima";
+    inline const std::string path_system_shaders  = "./void/ultima/shaders";
 
     inline const std::wstring Title = L"...";
 }

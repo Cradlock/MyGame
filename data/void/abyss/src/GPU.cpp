@@ -6,193 +6,297 @@
 #endif 
 
 
+void Artifex::createStagingBuffer(){
+    VkDeviceSize vertexSize = sizeof(targets[0]) * targets.size();
+    
+    
+    createBuffer(
+        vertexSize,
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+        this->staging_buffer,
+        this->staging_memory
+    );
+
+    void* data;
+    vkMapMemory(this->virtual_device, this->staging_memory, 0, vertexSize, 0, &data);
+    memcpy(data, targets.data(), (size_t)vertexSize);
+    vkUnmapMemory(this->virtual_device, this->staging_memory);
+}
+
+void Artifex::createVertexBuffer(){
+ VkDeviceSize vertexSize = sizeof(targets[0]) * targets.size();
+
+    // Создание device local vertex buffer
+    createBuffer(
+        vertexSize,
+        VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        this->vertex_buffer,
+        this->vertex_memory
+    );
+
+    // Копирование данных из staging buffer
+    VkCommandBuffer commandBuffer = beginSingleTimeCommands(); // утилита для одноразового cmd buffer
+    VkBufferCopy copyRegion{};
+    copyRegion.srcOffset = 0;
+    copyRegion.dstOffset = 0;
+    copyRegion.size = vertexSize;
+    vkCmdCopyBuffer(commandBuffer, this->staging_buffer, this->vertex_buffer, 1, &copyRegion);
+    endSingleTimeCommands(commandBuffer);
+
+};
+
+void Artifex::createUniformBuffer(){
+    // uniform buffer
+    VkDeviceSize uboSize = sizeof(Artifex::UniformBufferObject);
+    this->uniform_buffers.resize(MAX_FRAMES_IN_FLIGHT);
+    this->uniform_buffers_memory.resize(MAX_FRAMES_IN_FLIGHT);
+
+    for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT ;++i){
+       createBuffer(
+        uboSize,
+        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+        this->uniform_buffers[i],
+        this->uniform_buffers_memory[i]
+       );
+    }
+
+}
+
+
+void Artifex::recordCmdBuffer(VkCommandBuffer buffer,uint32_t img_index){
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = 0;
+
+    vkBeginCommandBuffer(buffer, &beginInfo);
+    
+    VkRenderPassBeginInfo renderPassInfo{};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = this->render_pass;
+    renderPassInfo.framebuffer = this->frame_buffer[img_index];
+    renderPassInfo.renderArea.offset = {0,0};
+    renderPassInfo.renderArea.extent = this->extent;
+
+    VkClearValue clearValues[2];
+    clearValues[0].color = {{0.0f,0.0f,0.0f,0.1f}};
+    clearValues[1].depthStencil = {1.0f,0};
+
+    renderPassInfo.clearValueCount = 2;
+    renderPassInfo.pClearValues = clearValues;
+
+    vkCmdBeginRenderPass(buffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+    vkCmdBindPipeline(buffer,VK_PIPELINE_BIND_POINT_GRAPHICS,this->graphic_conv);
+
+    VkBuffer vertexBuffer[] = {  this->vertex_buffer };
+    VkDeviceSize offsets[] = { 0 };
+    
+    vkCmdBindDescriptorSets(
+        buffer,
+        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        this->pipeline_layout,
+        0,
+        1,
+        this->descriptor_set.data(),
+        0,
+        nullptr
+    );
+
+
+    vkCmdBindVertexBuffers(
+        buffer, 
+        0, 
+        1, 
+        vertexBuffer, 
+        offsets
+    );
+
+    vkCmdDraw(buffer,static_cast<uint32_t>(targets.size()),1, 0, 0);
+
+    vkCmdEndRenderPass(buffer);
+
+    vkEndCommandBuffer(buffer);
+}
+
+
+void Artifex::sendQueue(uint32_t img_index){
+    VkSemaphore waitSem = imgAvailableSemaphore[current_frame];
+
+    VkSemaphore signalSem = renderFinishedSemaphore[current_frame];
+
+    if (waitSem == VK_NULL_HANDLE || signalSem == VK_NULL_HANDLE) {
+    std::cerr << "Error: Semaphore invalid for current_frame = " << current_frame << std::endl;
+    return;
+}
+    
+    VkSubmitInfo submit{};
+    submit.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    
+    VkSemaphore waitSemaphores[] = { waitSem };
+    VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+    
+    submit.waitSemaphoreCount = 1;
+    submit.pWaitSemaphores = waitSemaphores;
+    submit.pWaitDstStageMask = waitStages;
+    
+    submit.commandBufferCount = 1;
+    submit.pCommandBuffers = &command_buffer[img_index];
+    
+    VkSemaphore signalSemaphores[] = { signalSem };
+    submit.signalSemaphoreCount = 1;
+    submit.pSignalSemaphores = signalSemaphores;
+
+    vkResetFences(this->virtual_device, 1, &fence[current_frame]);
+    vkQueueSubmit(this->graphics_queue, 1, &submit, this->fence[current_frame]);
+
+}
+
+void Artifex::presentFrame(uint32_t img_index){
+    VkPresentInfoKHR present{};
+
+    VkSemaphore signalSem = renderFinishedSemaphore[current_frame];
+
+    present.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    VkSemaphore waitSemaphores[] = { signalSem };
+    present.waitSemaphoreCount = 1;
+    present.pWaitSemaphores = waitSemaphores;
+    
+    present.swapchainCount = 1;
+    present.pSwapchains = &this->swap_chain;
+    present.pImageIndices = &img_index;
+
+    vkQueuePresentKHR(this->present_queue, &present);
+
+    current_frame = (current_frame + 1) % MAX_FRAMES_IN_FLIGHT;
+}
+
+
+VkCommandBuffer Artifex::beginSingleTimeCommands(){
+    // Аллокация командного буфера
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandPool = this->command_pool;  // твой пул команд
+    allocInfo.commandBufferCount = 1;
+
+    VkCommandBuffer commandBuffer;
+    vkAllocateCommandBuffers(this->virtual_device, &allocInfo, &commandBuffer);
+
+    // Начало записи команд
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT; // одноразовый буфер!
+
+    vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+    return commandBuffer;
+}
+
+
+void Artifex::endSingleTimeCommands(VkCommandBuffer commandBuffer){
+    vkEndCommandBuffer(commandBuffer);
+
+    // Отправка в графическую очередь
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    vkQueueSubmit(this->graphics_queue, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(this->graphics_queue); // ждем, пока GPU выполнит
+
+    // Освобождаем командный буфер
+    vkFreeCommandBuffers(this->virtual_device, this->command_pool, 1, &commandBuffer);
+}
+
 
 Artifex::Artifex(PanarchonWindow& wind) 
-: physical_device(VK_NULL_HANDLE),queue_priority(1.0f),window(&wind)
+: physical_device(VK_NULL_HANDLE),window(&wind),current_frame(0)
 {
+  
+    createInstance();
+    createSurface();
+    choicePhysicalDevice();
+    createLogicalDevice();
+    createQueue();
+    createCommandPool();
+    createSwapChain();
+    createImageViews();
+    createRenderPass();
+    createDescriptorSetLayout();
+    createGraphicPipeline();
+    createFrameBuffer();
+    createCommandBuffer();
+    createSemaphore();
+    createFence();
+    create_UniformBuffer();
+    create_DescriptorPool();
+    create_DescriptorSet();
 
-    vkEnumerateInstanceExtensionProperties(nullptr,&this->extensionCount,nullptr);
-    // определение возможностей видеокарт
-    this->extensions = vector<VkExtensionProperties>(this->extensionCount); 
-    vkEnumerateInstanceExtensionProperties(nullptr,&this->extensionCount,this->extensions.data());
+}
+ 
+void Artifex::destroy(){
+    destroyCommandBuffer();
+    destroyCommandPool();
+    destroyFrameBuffer();
+    destroyImageViews();
+    destroySwapChain();
+    destroyDepthImage();
+    destroyGraphicPipeline();
+    destroyPipelineLayout();
+    destroyShaders();
+    destroyRenderPass();
+    destroySemaphore();
+    destroyFence();
+    destroyLogicalDevice();
+    destroySurface();
+    destroyInstance();
 
-// обшая инфромация об работе с драйверами
-    this->app_info = {};
-    this->app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    this->app_info.pApplicationName = "Default applicationName";
-    this->app_info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    this->app_info.pEngineName = "Default engine name";
-    this->app_info.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    this->app_info.apiVersion = VK_API_VERSION_1_0;
-
-
-    vector<const char*> req_extensions = {};
-    for(const auto& ext : this->extensions){
-        if(strcmp(ext.extensionName, "VK_KHR_surface") == 0){
-            req_extensions.push_back(ext.extensionName);
-            continue;
-        }
-
-        if(strcmp(ext.extensionName,"VK_KHR_swapchain") == 0){
-            req_extensions.push_back(ext.extensionName);
-            continue;
-        }
-
-#ifdef _WIN32
-        if (strcmp(ext.extensionName, "VK_KHR_win32_surface") == 0) {
-            req_extensions.push_back("VK_KHR_win32_surface");
-            continue;
-        }
-#endif
-
-    }
-
-    VkInstanceCreateInfo connect_info = {};
-    connect_info = {};
-    connect_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    connect_info.pApplicationInfo = &this->app_info;
-    connect_info.enabledExtensionCount = 2;
-    connect_info.ppEnabledExtensionNames = req_extensions.data();
-    connect_info.enabledLayerCount = 0;
+}
 
 
-    VkResult result = vkCreateInstance(&connect_info,nullptr,&this->connect);
 
-    if(result != VK_SUCCESS){
-       ErrorNotiffication("Unable create VkInstance","In Abyss/GPU.cpp Artifex constructor");   
+void Artifex::update(){
+    uint32_t img_index = this->takeFrame();
+    
+    this->drawFrame(img_index);
+    this->presentFrame(img_index);
+}
+
+uint32_t Artifex::takeFrame(){
+    vkWaitForFences(this->virtual_device,1,&fence[current_frame], VK_TRUE,UINT64_MAX);
+    vkResetFences(this->virtual_device, 1, &fence[current_frame]); 
+    
+    uint32_t image_index = 0;
+    VkResult res = vkAcquireNextImageKHR(
+        this->virtual_device,
+        this->swap_chain,
+        UINT64_MAX,
+        this->imgAvailableSemaphore[current_frame],
+        VK_NULL_HANDLE,
+        &image_index
+    );
+
+    if(res == VK_ERROR_OUT_OF_DATE_KHR ){
+        ErrorNotiffication("Write new function for recreate SwapChain",__FILE__);
+        return -1;
+    }else if(res != VK_SUCCESS){
+        ErrorNotiffication("Failed to get a frame",__FILE__);    
+        return -1;
     }
   
-
-// Получение всех видеокарт 
-    vkEnumeratePhysicalDevices(this->connect,&this->device_count, nullptr);
-    if(!this->device_count){
-        ErrorNotiffication("Not connected with vulkan","Abyss/GPU.cpp constructor artifex");
-    }
-    this->devices = vector<VkPhysicalDevice>(this->device_count);
-    vkEnumeratePhysicalDevices(this->connect,&this->device_count, this->devices.data());
-
-    
-// Инфромация о графическом устройстве
-    // обшая
-    VkPhysicalDeviceProperties device_propt;
-
-    // подробно
-    // VkPhysicalDeviceFeatures device_features;
-    
-    int score = 0;
-    int best_score = 0;
-// Выбор определенного устройства
-    for(const auto& device : this->devices){
-        vkGetPhysicalDeviceProperties(device,&device_propt);
-
-        switch (device_propt.deviceType) {
-        case VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU:  score += 1000; break;
-        case VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU: score += 500; break;
-        case VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU:    score += 100; break;
-        case VK_PHYSICAL_DEVICE_TYPE_CPU:            score += 10; break;
-        default: break;
-        }
-
-        score += device_propt.limits.maxImageDimension2D;
-
-        if(score > best_score){
-            best_score = score;
-            this->physical_device = device;
-        }
-
-    }
-
-    if(this->physical_device == VK_NULL_HANDLE){
-        cout << "Not connected with GPU :" << endl;
-    }
-
-     this->index_family = this->select_queue(this->physical_device);
-
-    VkDeviceQueueCreateInfo queue_info = {};
-    queue_info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queue_info.queueFamilyIndex = this->index_family;
-    queue_info.queueCount = 1;
-    queue_info.pQueuePriorities = &this->queue_priority;
-    
-    VkDeviceCreateInfo virtual_device_info = {};
-    virtual_device_info.sType =  VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    virtual_device_info.queueCreateInfoCount = 1;
-    virtual_device_info.pQueueCreateInfos = &queue_info;
-
-    if(vkCreateDevice(this->physical_device,&virtual_device_info,nullptr,&this->virtual_device ) != VK_SUCCESS){
-        ErrorNotiffication("Unable create logic device","in abyss/GPU.cpp");
-    }
-    
-    vkGetDeviceQueue(this->virtual_device,this->index_family,0,&this->graphic_queue);
-    
-    this->createSurface();
-
-
+    return image_index;
 }
 
+void Artifex::drawFrame(uint32_t img_index){
 
-void Artifex::destroy(){
-    vkDestroySurfaceKHR(this->connect,this->surface,nullptr);
-    vkDestroyInstance(this->connect,nullptr);
-}
-
-
-
-
-void Artifex::setAppName(string val){
-    this->app_info.pApplicationName = val.c_str();
-}
-
-void Artifex::setEngineName(string val){
-    this->app_info.pEngineName = val.c_str();
-}
-
-
-
-uint32_t Artifex::select_queue(VkPhysicalDevice& device){
-   uint32_t family_count = 0;
+   this->recordCmdBuffer(this->command_buffer[img_index], img_index);
+   this->sendQueue(img_index);
    
-   vkGetPhysicalDeviceQueueFamilyProperties(device,&family_count,nullptr);
-   if(!family_count) return UINT32_MAX;
-
-   vector<VkQueueFamilyProperties> families(family_count);
-   vkGetPhysicalDeviceQueueFamilyProperties(device,&family_count,families.data());
-
-   for( int i = 0; i < family_count ;++i ){
-       if( families[i].queueFlags & VK_QUEUE_GRAPHICS_BIT ){
-         return i;
-       }
-   }
-   
-
-   return UINT32_MAX;
 }
 
 
-#ifdef _WIN32
 
-void Artifex::createSurface(){
-   if(this->window == nullptr){
-        ErrorNotiffication("Not found window","in abyss/GPU.cpp/Artifex/createSurface");
-        exit(EXIT_FAILURE);
-   }
-
-    // for(const auto&  ext : this->extensions ){
-    //     cout << ext.extensionName << endl;
-    // }
-
-    VkWin32SurfaceCreateInfoKHR surface_info = {};
-    surface_info.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-    surface_info.hwnd = this->window->getMainWindow();
-    surface_info.hinstance = this->window->gethInstance();
-
-    
-
-    if(vkCreateWin32SurfaceKHR(this->connect,&surface_info,nullptr,&this->surface) != VK_SUCCESS ){
-       ErrorNotiffication("Failed to create SURFACE","in abyss/GPU.cpp/Artifex/createSurface");
-       exit(EXIT_FAILURE);
-    }
-}
-
-
-#endif

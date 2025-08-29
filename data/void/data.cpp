@@ -18,7 +18,6 @@ void GameManager::start_init(){
    this->memory_manager.init();
    this->settings_manager.init();  
    this->mod_manager.init();
-   
 
 }
 
@@ -44,12 +43,19 @@ void GameManager::splashScreen(){
 }
 
 void GameManager::game(){
+   
+
+   this->artifex.targets.push_back({{ 0.0f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f }});
+   this->artifex.targets.push_back({{ 0.5f,  0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f }});
+   this->artifex.targets.push_back({{ -0.5f, 0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f }});
+   this->artifex.createStagingBuffer();
+   this->artifex.createVertexBuffer();
+   this->artifex.createUniformBuffer();
+   
    while(running){
       this->proccessEvent();
+      this->artifex.update();
       
-      
-
-
       this->resets();
    }
 

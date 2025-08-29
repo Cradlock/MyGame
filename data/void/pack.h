@@ -11,6 +11,8 @@
 
 void ErrorNotiffication(const char* message, string file_name);
 
+void ErrorNotiffication(string message, string file_name);
+
 
 
 

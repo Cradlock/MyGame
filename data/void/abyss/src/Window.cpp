@@ -78,7 +78,6 @@ void PanarchonWindow::updateWindow(){
 
 
 
-
 HWND PanarchonWindow::getMainWindow(){
   return this->window; 
 }

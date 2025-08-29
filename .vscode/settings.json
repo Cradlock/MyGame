@@ -1,6 +1,7 @@
 {
     
     "files.associations": {
+        "*.java": "java",
         "ostream": "cpp",
         "iostream": "cpp",
         "iosfwd": "cpp",
@@ -46,7 +47,28 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "optional": "cpp",
+        "any": "cpp",
+        "bit": "cpp",
+        "bitset": "cpp",
+        "charconv": "cpp",
+        "chrono": "cpp",
+        "codecvt": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "cstring": "cpp",
+        "forward_list": "cpp",
+        "ratio": "cpp",
+        "string_view": "cpp",
+        "format": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "span": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp",
+        "valarray": "cpp",
+        "variant": "cpp"
     },
     "terminal.integrated.env.windows": {
             "PATH": "C:\\mingw13.1.0\\bin;C:\\other\\paths;${env:PATH}"

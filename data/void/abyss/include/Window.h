@@ -46,7 +46,45 @@ const wchar_t* szTitle;
 PanarchonWindow(HINSTANCE h, HINSTANCE hP, LPSTR l, int n,const wchar_t* t);
 PanarchonWindow();
 HWND getMainWindow();
+inline pair<int,int> getSizeWindow(){
+
+#ifdef _WIN32
+RECT rect;
+if(GetClientRect(this->window,&rect)){
+   int width = rect.right - rect.left;
+   int height = rect.bottom - rect.top;
+   return {width,height};
+}else{
+    return {0,0};
+}
+
+#endif 
+
+
+#ifdef __linux__
+    ::Display* display = XOpenDisplay(nullptr);
+    if (!display) {
+        return {0, 0};
+    }
+
+    XWindowAttributes attributes;
+    if (XGetWindowAttributes(display, this->window, &attributes) == 0) {
+        XCloseDisplay(display);
+        return {0, 0};
+    }
+
+    int width = attributes.width;
+    int height = attributes.height;
+
+    XCloseDisplay(display);
+    return {width, height};
+    
+#endif 
+
+
+}
 inline HINSTANCE gethInstance(){return this->hinstance;};
+
 void showWindow();
 void updateWindow();
 void msgLoop();
