@@ -31,6 +31,10 @@ void Artifex::createFence(){
 
     }
 
+
+    this->imagesInFlight.resize(swap_chain_images.size(), VK_NULL_HANDLE);
+    
+
     
 }
 

@@ -125,7 +125,7 @@ void Artifex::recordCmdBuffer(VkCommandBuffer buffer,uint32_t img_index){
 void Artifex::sendQueue(uint32_t img_index){
     VkSemaphore waitSem = imgAvailableSemaphore[current_frame];
 
-    VkSemaphore signalSem = renderFinishedSemaphore[current_frame];
+    VkSemaphore signalSem = renderFinishedSemaphore[img_index];
 
     if (waitSem == VK_NULL_HANDLE || signalSem == VK_NULL_HANDLE) {
     std::cerr << "Error: Semaphore invalid for current_frame = " << current_frame << std::endl;
@@ -155,10 +155,10 @@ void Artifex::sendQueue(uint32_t img_index){
 }
 
 void Artifex::presentFrame(uint32_t img_index){
+
+    VkSemaphore signalSem = renderFinishedSemaphore[img_index];
+    
     VkPresentInfoKHR present{};
-
-    VkSemaphore signalSem = renderFinishedSemaphore[current_frame];
-
     present.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
     VkSemaphore waitSemaphores[] = { signalSem };
     present.waitSemaphoreCount = 1;
@@ -267,27 +267,36 @@ void Artifex::update(){
 }
 
 uint32_t Artifex::takeFrame(){
-    vkWaitForFences(this->virtual_device,1,&fence[current_frame], VK_TRUE,UINT64_MAX);
-    vkResetFences(this->virtual_device, 1, &fence[current_frame]); 
-    
+        // Ждем fence текущего кадра и затем ресетим его
+    vkWaitForFences(this->virtual_device, 1, &fence[current_frame], VK_TRUE, UINT64_MAX);
+    vkResetFences(this->virtual_device, 1, &fence[current_frame]);
+
     uint32_t image_index = 0;
     VkResult res = vkAcquireNextImageKHR(
         this->virtual_device,
         this->swap_chain,
         UINT64_MAX,
-        this->imgAvailableSemaphore[current_frame],
+        this->imgAvailableSemaphore[current_frame], // сигнал при доступности
         VK_NULL_HANDLE,
         &image_index
     );
 
     if(res == VK_ERROR_OUT_OF_DATE_KHR ){
         ErrorNotiffication("Write new function for recreate SwapChain",__FILE__);
-        return -1;
-    }else if(res != VK_SUCCESS){
+        return UINT32_MAX; // или другой индикатор ошибки
+    } else if(res != VK_SUCCESS && res != VK_SUBOPTIMAL_KHR){
         ErrorNotiffication("Failed to get a frame",__FILE__);    
-        return -1;
+        return UINT32_MAX;
     }
-  
+
+    // Если изображение уже "занято" другим в-flight кадром — подождать его fence
+    if (imagesInFlight[image_index] != VK_NULL_HANDLE) {
+        vkWaitForFences(this->virtual_device, 1, &imagesInFlight[image_index], VK_TRUE, UINT64_MAX);
+    }
+
+    // Помечаем: сейчас это изображение будет обслуживаться fence текущего кадра
+    imagesInFlight[image_index] = fence[current_frame];
+
     return image_index;
 }
 

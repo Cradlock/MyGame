@@ -203,6 +203,7 @@ vector<VkSemaphore> renderFinishedSemaphore;
 
 //Барьер
 vector<VkFence> fence;   
+vector<VkFence> imagesInFlight;
    
 // Дескрипторы
    // буферы для unform(шейдеров)
