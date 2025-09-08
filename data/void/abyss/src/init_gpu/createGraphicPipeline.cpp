@@ -89,6 +89,7 @@ void Artifex::createGraphicPipeline(){
     vkDestroyShaderModule(this->virtual_device, this->frag_shader, nullptr);
     
 }
+
 vector<char> Artifex::read_shader(string path){
     ifstream file(path,ios::ate | ios::binary);
     
@@ -102,6 +103,7 @@ vector<char> Artifex::read_shader(string path){
     file.close();
     return buffer;
 }
+
 VkShaderModule Artifex::create_ShaderModule(const vector<char>& code){
     VkShaderModuleCreateInfo create_info{};
     create_info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -114,6 +116,7 @@ VkShaderModule Artifex::create_ShaderModule(const vector<char>& code){
     }
     return shaderModule;
 }
+
 VkPipelineShaderStageCreateInfo Artifex::create_FragShaderStage(){
     this->frag_shader = this->create_ShaderModule(
         this->read_shader(Resources::path_system_shaders + "/fragment.spv")

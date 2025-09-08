@@ -48,20 +48,20 @@ void Artifex::createVertexBuffer(){
 };
 
 void Artifex::createUniformBuffer(){
-    // uniform buffer
-    VkDeviceSize uboSize = sizeof(Artifex::UniformBufferObject);
-    this->uniform_buffers.resize(MAX_FRAMES_IN_FLIGHT);
-    this->uniform_buffers_memory.resize(MAX_FRAMES_IN_FLIGHT);
+        // uniform buffer
+        VkDeviceSize uboSize = sizeof(Artifex::UniformBufferObject);
+        this->uniform_buffers.resize(MAX_FRAMES_IN_FLIGHT);
+        this->uniform_buffers_memory.resize(MAX_FRAMES_IN_FLIGHT);
 
-    for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT ;++i){
-       createBuffer(
-        uboSize,
-        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        this->uniform_buffers[i],
-        this->uniform_buffers_memory[i]
-       );
-    }
+        for(size_t i = 0; i < MAX_FRAMES_IN_FLIGHT ;++i){
+        createBuffer(
+            uboSize,
+            VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            this->uniform_buffers[i],
+            this->uniform_buffers_memory[i]
+        );
+        }
 
 }
 
@@ -261,13 +261,12 @@ void Artifex::destroy(){
 
 void Artifex::update(){
     uint32_t img_index = this->takeFrame();
-    
     this->drawFrame(img_index);
     this->presentFrame(img_index);
 }
 
-uint32_t Artifex::takeFrame(){
-        // Ждем fence текущего кадра и затем ресетим его
+uint32_t Artifex::takeFrame()   {
+    
     vkWaitForFences(this->virtual_device, 1, &fence[current_frame], VK_TRUE, UINT64_MAX);
     vkResetFences(this->virtual_device, 1, &fence[current_frame]);
 
@@ -276,29 +275,28 @@ uint32_t Artifex::takeFrame(){
         this->virtual_device,
         this->swap_chain,
         UINT64_MAX,
-        this->imgAvailableSemaphore[current_frame], // сигнал при доступности
+        this->imgAvailableSemaphore[current_frame], 
         VK_NULL_HANDLE,
         &image_index
     );
 
     if(res == VK_ERROR_OUT_OF_DATE_KHR ){
         ErrorNotiffication("Write new function for recreate SwapChain",__FILE__);
-        return UINT32_MAX; // или другой индикатор ошибки
+        return UINT32_MAX;
     } else if(res != VK_SUCCESS && res != VK_SUBOPTIMAL_KHR){
         ErrorNotiffication("Failed to get a frame",__FILE__);    
         return UINT32_MAX;
     }
 
-    // Если изображение уже "занято" другим в-flight кадром — подождать его fence
     if (imagesInFlight[image_index] != VK_NULL_HANDLE) {
         vkWaitForFences(this->virtual_device, 1, &imagesInFlight[image_index], VK_TRUE, UINT64_MAX);
     }
 
-    // Помечаем: сейчас это изображение будет обслуживаться fence текущего кадра
     imagesInFlight[image_index] = fence[current_frame];
 
     return image_index;
 }
+
 
 void Artifex::drawFrame(uint32_t img_index){
 
@@ -306,6 +304,8 @@ void Artifex::drawFrame(uint32_t img_index){
    this->sendQueue(img_index);
    
 }
+
+
 
 
 

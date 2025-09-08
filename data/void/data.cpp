@@ -48,6 +48,7 @@ void GameManager::game(){
    this->artifex.targets.push_back({{ 0.0f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f }});
    this->artifex.targets.push_back({{ 0.5f,  0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f }});
    this->artifex.targets.push_back({{ -0.5f, 0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f }});
+
    this->artifex.createStagingBuffer();
    this->artifex.createVertexBuffer();
    this->artifex.createUniformBuffer();
