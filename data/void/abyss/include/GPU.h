@@ -79,6 +79,8 @@ struct QFamily {
 // Аттрибуты для отрисовки
 std::vector<Vertex> targets;
 
+std::vector<uint16_t> indices;
+
 
 // Память под отрисовку
 
@@ -360,6 +362,8 @@ void createStagingBuffer();
 void createVertexBuffer();
 
 void createUniformBuffer();
+
+void createIndexBuffer();
 
 void recordCmdBuffer(VkCommandBuffer buffer,uint32_t img_index);
 
