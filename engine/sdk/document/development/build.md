@@ -14,20 +14,21 @@ projects(another directory)/
                     x86 | x64 
 
 tools/  
-    configs/
-        modules.json
-    bin/
-        /windows
+    /windows
             x86/
                 plugins/
                 libs/
+                configs/
             x64/
                 plugins/
                 libs/
-        /linux 
+                configs/
+    /linux 
             x64/
                 plugins/
                 libs/
+                configs/
+    
 
 builder.dll
 sf.exe

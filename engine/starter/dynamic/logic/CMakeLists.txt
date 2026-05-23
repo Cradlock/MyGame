@@ -7,8 +7,17 @@ add_library(logic SHARED ${SOURCES})
 
 target_include_directories(logic PUBLIC include )
 
+set(X_VCPKG_APPLOCAL_DEPS OFF)
+
 target_link_libraries(logic PRIVATE core)
 target_link_libraries(logic PUBLIC engine_sdk)
+
+install(TARGETS logic
+    RUNTIME DESTINATION "bin" 
+    LIBRARY DESTINATION "bin"
+    ARCHIVE DESTINATION "lib"
+)
+
 
 
 

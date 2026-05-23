@@ -38,7 +38,7 @@ SFbuild.json
 
 
 ## Чек-лист по проекту
-- [ ] Настроить `CMakeLists` в: engine,starter
+- [x] Настроить `CMakeLists` в: starter
 
 - [ ] Прописать логику ресурс-менеджера 
 

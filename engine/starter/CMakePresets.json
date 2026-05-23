@@ -1,0 +1,53 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "linux-x64",
+      "displayName": "Linux x64 Production",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build_linux_x64",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "CROSS_SETTINGS": "cmake/sc-linux-x64.cmake",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/../builder/tools/linux/x64"
+      }
+    },
+    {
+      "name": "windows-x64",
+      "displayName": "Cross-Compile to Windows x64",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build_windows_x64",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_NAME": "Windows",
+        "X_VCPKG_APPLOCAL_DEPS": "OFF",
+        "CMAKE_C_COMPILER": "x86_64-w64-mingw32-gcc",
+        "CMAKE_CXX_COMPILER": "x86_64-w64-mingw32-g++",
+        "CMAKE_TOOLCHAIN_FILE": "$env{HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
+        "CROSS_SETTINGS": "cmake/sc-windows-x64.cmake",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/../builder/tools/windows/x64"
+      }
+    },
+    {
+      "name": "windows-x32",
+      "displayName": "Cross-Compile to Windows x32",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build_windows_x32",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_NAME": "Windows",
+        "X_VCPKG_APPLOCAL_DEPS": "OFF",
+        "CMAKE_C_COMPILER": "i686-w64-mingw32-gcc",
+        "CMAKE_CXX_COMPILER": "i686-w64-mingw32-g++",
+        "CMAKE_TOOLCHAIN_FILE": "$env{HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_TARGET_TRIPLET": "x86-mingw-dynamic",
+        "CROSS_SETTINGS": "cmake/sc-windows-x32.cmake",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/../builder/tools/windows/x32"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "linux-x64", "configurePreset": "linux-x64" },
+    { "name": "windows-x64", "configurePreset": "windows-x64" },
+    { "name": "windows-x32", "configurePreset": "windows-x32" }
+  ]
+}
