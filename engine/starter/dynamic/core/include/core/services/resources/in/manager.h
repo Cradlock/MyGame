@@ -18,11 +18,11 @@
 #include <vector>
 #include "provider.h"
 #include "resource.h"
-#include "sfr/common/types.h"
 #include "sfr/core/resources/Interface.h"
 #include "sfr/core/resources/results.h"
 #include "sfr/core/resources/states.h"
 #include "task.h"
+
 
 
 class IvfsProvider;
@@ -47,11 +47,8 @@ public:
 
   // Функция инициализации провайдеров
   static void InitProvider();
-
-
 public:
 //####### [Функции для API ]
-  
   // Загрузка ресурса 
   static ResResource load(
     const std::string_view uri,
@@ -74,9 +71,6 @@ public:
   static RESULT_CODE release(
     Resource*
   );
- 
-
-  
   // ###### [Внутрение Доп функции]
 private:
 

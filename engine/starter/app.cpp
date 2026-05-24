@@ -1,6 +1,5 @@
 #include "core/engine.h"
 #include <sfr/common/status_codes.h>
-#include "core/services/logger/Logger.h"
 #include "logic/hello/hello.h"
 // Основной двигатель
 core::Engine engine;

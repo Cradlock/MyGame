@@ -1,9 +1,10 @@
 #pragma once 
 
 
-#include "core/services/resources/in/resource.h"
 #include <sfr/core/resources/Interface.h>
 #include "sfr/core/resources/states.h"
+#include "core/services/resources/in/resource.h"
+
 
 class Task{
   public:

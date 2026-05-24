@@ -47,7 +47,7 @@ RESULT_CODE ResourceManager::action(Task task){
 
   switch (task_type) {
     case LOAD:
-       
+              
     case CREATE:
       
     case SAVE:

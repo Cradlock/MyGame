@@ -8,7 +8,6 @@
 #include "sfr/core/resources/IStream.h"
 #include "sfr/core/resources/states.h"
 #include <cstdio>
-#include <string>
 #include <string_view>
 
 
@@ -26,11 +25,9 @@ public:
 
 
 
-
-
 class FileProvider : public IvfsProvider{
   
-  unique_ptr<IStream> OpenStream(
+  std::unique_ptr<IStream> OpenStream(
     const std::string_view,
     const ResourceTaskType) override;
 
