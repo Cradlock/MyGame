@@ -1,9 +1,8 @@
 #pragma once 
 
+class BootLogger{
 
-
-
-
+};
 
 
 
