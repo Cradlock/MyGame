@@ -20,7 +20,11 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -shared-libgcc")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -shared-libgcc")
 
 
-set(MINGW_BIN_DIR "/usr/x86_64-w64-mingw32/bin")
+
+if(NOT DEFINED MINGW_BIN_DIR)
+    set(MINGW_BIN_DIR "/usr/x86_64-w64-mingw32/bin")
+endif()
+
 set(GCC_DLL "libgcc_s_seh-1.dll")
 
 # Список всех DLL, которые должны лежать с аппкой

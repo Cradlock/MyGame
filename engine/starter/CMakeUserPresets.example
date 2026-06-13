@@ -1,0 +1,25 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "local",
+      "displayName": "Windows x64 Local Scoop",
+      "description": "Локальная сборка на Windows через Scoop без изменения глобального конфига",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build_windows_local",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang.exe",
+        "CMAKE_CXX_COMPILER": "clang++.exe",
+        "CMAKE_CXX_FLAGS": "-target x86_64-pc-windows-gnu",
+        "CMAKE_C_FLAGS": "-target x86_64-pc-windows-gnu",
+        "CMAKE_TOOLCHAIN_FILE": "C:/Developer/Scoop/apps/vcpkg/current/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
+        "CROSS_SETTINGS":"cmake/sc-windows-x64.cmake",
+        "MINGW_BIN_DIR": "C:/Developer/Scoop/apps/mingw/current/bin"
+      }
+    }
+  ],
+  "buildPresets":[
+    {"name":"local","configurePreset":"local"}
+  ]
+}

@@ -193,12 +193,38 @@ Block Object {size,is_free = true}
 [head][][][][][][][][][][][][][][][][][][][][][]
 
 
-Allocate new 
+Allocate new (size)
+    //Best fit schemes
+    
+[head][][][][][][][][][][][][][][][][][]...
+        |
+        |
+        v 
+        
+        free = false    |free = true
+    [new head][][][][][]|[head][][][][][][][][][]...
+       /
+      /
+     /
+return ptr 
+    
+Deallocate free (ptr) 
+    head_ptr = ptr - sizeof(header Object)
+    head_ptr->free = true;
+
+> Слияние при фрагментации памяти;
 
 
+[200][200][....]
+    \
+     \
+      \
+    [200]+[200]
+        \
+         \
+         [400]
 
-Deallocate free 
-
+> if free blocks nearby: they merge
 
 
 

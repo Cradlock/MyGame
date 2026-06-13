@@ -19,7 +19,6 @@
       "binaryDir": "${sourceDir}/build_windows_x64",
       "cacheVariables": {
         "CMAKE_SYSTEM_NAME": "Windows",
-        "X_VCPKG_APPLOCAL_DEPS": "OFF",
         "CMAKE_C_COMPILER": "x86_64-w64-mingw32-gcc",
         "CMAKE_CXX_COMPILER": "x86_64-w64-mingw32-g++",
         "CMAKE_TOOLCHAIN_FILE": "$env{HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake",
@@ -35,7 +34,6 @@
       "binaryDir": "${sourceDir}/build_windows_x32",
       "cacheVariables": {
         "CMAKE_SYSTEM_NAME": "Windows",
-        "X_VCPKG_APPLOCAL_DEPS": "OFF",
         "CMAKE_C_COMPILER": "i686-w64-mingw32-gcc",
         "CMAKE_CXX_COMPILER": "i686-w64-mingw32-g++",
         "CMAKE_TOOLCHAIN_FILE": "$env{HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake",
@@ -49,5 +47,64 @@
     { "name": "linux-x64", "configurePreset": "linux-x64" },
     { "name": "windows-x64", "configurePreset": "windows-x64" },
     { "name": "windows-x32", "configurePreset": "windows-x32" }
+  ],
+  "testPresets": [
+    {
+      "name": "linux-x64",
+      "configurePreset": "linux-x64",
+      "displayName": "Run Linux Tests",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    },
+    {
+      "name": "windows-x64",
+      "configurePreset": "windows-x64",
+      "displayName": "Run Windows x64 Tests (via Wine)",
+      "output": { "outputOnFailure": true },
+      "execution": {
+        "noTestsAction": "ignore"
+      }
+    },
+    {
+      "name": "windows-x32",
+      "configurePreset": "windows-x32",
+      "displayName": "Run Windows x32 Tests (via Wine)",
+      "output": { "outputOnFailure": true },
+      "execution": {
+        "noTestsAction": "ignore"
+      }
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "linux-x64-workflow",
+      "displayName": "Full Linux Build and Test Pipeline",
+      "steps": [
+        { "type": "configure", "name": "linux-x64" },
+        { "type": "build", "name": "linux-x64" },
+        { "type": "test", "name": "linux-x64" }
+      ]
+    },
+    {
+      "name": "windows-x64-workflow",
+      "displayName": "Full Windows x64 Cross-Compile Pipeline",
+      "steps": [
+        { "type": "configure", "name": "windows-x64" },
+        { "type": "build", "name": "windows-x64" },
+        { "type": "test", "name": "windows-x64" }
+      ]
+    },
+    {
+      "name": "windows-x32-workflow",
+      "displayName": "Full Windows x32 Cross-Compile Pipeline",
+      "steps": [
+        { "type": "configure", "name": "windows-x32" },
+        { "type": "build", "name": "windows-x32" },
+        { "type": "test", "name": "windows-x32" }
+      ]
+    }
   ]
 }
+
+
+
