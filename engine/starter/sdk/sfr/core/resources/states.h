@@ -4,7 +4,7 @@
 
 
 
-typedef enum {
+typedef enum sfr_resource_state_e{
     RES_STATE_EMPTY = 0,      // Объект создан, но еще не в очереди
     RES_STATE_IN_QUEUE,       // Ждет свободного воркера
     RES_STATE_LOADING,        // Воркер прямо сейчас читает данные
@@ -19,20 +19,20 @@ typedef enum {
     RES_STATE_OS_ERROR,              // операционная систем отказала
     RES_STATE_WRITE_ERROR            // Ошибка записи
                                   
-} ResourceState;
+} sfr_resource_state_t;
 
 
 
-typedef enum {
+typedef enum sfr_resource_action_type_e{
   SYNC,
   ASYNC 
-} ResourceActionType;
+} sfr_resource_action_type_t;
 
-typedef enum {
+typedef enum sfr_resource_task_type_e{
   LOAD,
   SAVE,
   RELEASE,
   CREATE 
-} ResourceTaskType;
+} sfr_resource_task_type_t;
 
 

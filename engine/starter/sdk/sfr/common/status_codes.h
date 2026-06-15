@@ -2,23 +2,23 @@
 
 
 // Общие коды ошибок 
-typedef enum {
-  SUCCESS,            // успешно
-  NOT_FOUND,          // Не найдено 
-  INVALID_PARAMETR,   // Неправильные аргументы
-  INVALID_PATH,       // Неправильный путь
-  UNKNOW_EXTENSION,   // Неизвестный тип
-  CREATED_NEW,        // Создан новый обьект
-  UNKNOW_ACTION,      // Неизвестное действие
-  WRONG_TYPE,         // Неправильный тип
-  OUT_OF_RANGE,       // Выходит за границы
-  OBJECT_ERROR_STATE, // Обьект не может сделать действие
+typedef enum sfr_result_code_e {
+  SFR_SUCCESS,            // успешно
+   SFR_NOT_FOUND,          // Не найдено 
+   SFR_INVALID_PARAMETR,   // Неправильные аргументы
+   SFR_INVALID_PATH,       // Неправильный путь
+   SFR_UNKNOW_EXTENSION,   // Неизвестный тип
+   SFR_CREATED_NEW,        // Создан новый обьект
+   SFR_UNKNOW_ACTION,      // Неизвестное действие
+   SFR_WRONG_TYPE,         // Неправильный тип
+   SFR_OUT_OF_RANGE,       // Выходит за границы
+   SFR_OBJECT_ERROR_STATE, // Обьект не может сделать действие
 
-  UNKNOW_ERROR,       // Неизвестная ошибка
-  UNCOMPATABLE_ACTION,// Действие не поддерживается
-  IO_ERROR,           // Техническая ошибка ввода-вывода 
-  SEEK_ERROR,         // Ошибка перехода курсора 
+   SFR_UNKNOW_ERROR,       // Неизвестная ошибка
+   SFR_UNCOMPATABLE_ACTION,// Действие не поддерживается
+   SFR_IO_ERROR,           // Техническая ошибка ввода-вывода 
+   SFR_SEEK_ERROR,         // Ошибка перехода курсора 
 
-} RESULT_CODE;
+} sfr_result_code_t;
 
 

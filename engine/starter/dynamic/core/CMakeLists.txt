@@ -1,5 +1,10 @@
 set(CORE_SOURCES
   src/Engine.cpp 
+  src/boot/BootConfig.cpp
+  src/boot/BootLogger.cpp
+  src/utils/root.cpp
+  src/utils/time.cpp
+  src/utils/str.cpp 
 )
 
 

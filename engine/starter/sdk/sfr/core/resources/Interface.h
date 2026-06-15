@@ -6,33 +6,33 @@
 
 
 // Интерфейс для работы с ресурсами 
-typedef struct Resource {
+typedef struct sfr_resource_s {
   void* data;  
   const uint32_t type; 
 
-} Resource;
+} sfr_resource_t;
 
 
 
 
-typedef struct IStream IStream;
+typedef struct sfr_istream_s sfr_istream_t;
 
 
 // Список функций для каждого ресурса
-typedef struct ResourceVtable {
+typedef struct sfr_resource_vtable_s {
   // Загрузка
-  RESULT_CODE (*load)(Resource* res,IStream* istr,Resource** out);
+  sfr_result_code_t (*load)(sfr_resource_t* res,sfr_istream_t* istr,sfr_resource_t** out);
   // Создание 
-  RESULT_CODE (*create)(IStream* istr,Resource** out);
+  sfr_result_code_t (*create)(sfr_istream_t* istr,sfr_resource_t** out);
   // Сохранение
-  RESULT_CODE (*save)(Resource* res,IStream* istr);
+  sfr_result_code_t (*save)(sfr_resource_t* res,sfr_istream_t* istr);
   // Освобождение 
-  void (*release)(Resource* res);
+  void (*release)(sfr_resource_t* res);
 
-} ResourceVtable;
+} sfr_resource_vtable_t;
 
 // Функция-фабрика ресурсов 
-typedef Resource* (*ResourceCreator)(const char* path);
+typedef sfr_resource_t* (*sfr_resource_creator_fn)(const char* path);
 
 
 

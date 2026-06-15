@@ -3,35 +3,35 @@
 
 
 
+#include "sfr/core/resources/Interface.h"
 #include "sfr/core/resources/results.h"
 #include <cstddef>
 #include <cstdint>
 
-typedef struct IStream IStream;
 
-typedef struct IStreamVtbl {
+typedef struct sfr_istream_vtbl_s {
   
-  ResUsedBytes (*read)(IStream* self,void* buffer,size_t size);
+  ResUsedBytes (*read)(sfr_istream_t* self,void* buffer,size_t size);
 
-  ResUsedBytes (*write)(IStream* self, const void* buffer, size_t size);
+  ResUsedBytes (*write)(sfr_istream_t* self, const void* buffer, size_t size);
 
-  ResOffsetBytes (*seek)(IStream* self, int64_t offset, int origin);
+  ResOffsetBytes (*seek)(sfr_istream_t* self, int64_t offset, int origin);
 
-  ResSize (*tell)(IStream* self);
+  ResSize (*tell)(sfr_istream_t* self);
 
-  ResSize (*size)(IStream* self);
+  ResSize (*size)(sfr_istream_t* self);
 
-  ResValid   (*is_valid)(IStream* self);
+  ResValid   (*is_valid)(sfr_istream_t* self);
 
-  void   (*close)(IStream* self);
+  void   (*close)(sfr_istream_t* self);
 
-} IStreamVbtl;
+} sfr_istream_vtbl_t;
 
 
 // [Поток данных]
-typedef struct IStream {
-  const IStreamVtbl* vptr; 
-} IStream;
+typedef struct sfr_istream_s {
+  const sfr_istream_vtbl_t* vptr; 
+} sfr_istream_t;
 
 
 

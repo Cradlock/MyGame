@@ -69,12 +69,14 @@ set(RESOURCES_TO_COPY
     "${RES_SOURCE_DIR}/assets"
     "${RES_SOURCE_DIR}/configs"
     "${RES_SOURCE_DIR}/.plugins.json"
+    "${RES_SOURCE_DIR}/.config.ini"
 )
 add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/resources.stamp"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${RES_SOURCE_DIR}/assets" "${RES_TARGET_DIR}/assets"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${RES_SOURCE_DIR}/configs" "${RES_TARGET_DIR}/configs"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${RES_SOURCE_DIR}/.plugins.json" "${RES_TARGET_DIR}/.plugins.json"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${RES_SOURCE_DIR}/.config.ini" "${RES_TARGET_DIR}/.config.ini"
     # Создаем маркер-файл, чтобы Ninja понимал, что копирование завершено успешно
     COMMAND ${CMAKE_COMMAND} -E touch "${CMAKE_CURRENT_BINARY_DIR}/resources.stamp"
     COMMENT "Копирование ресурсов (assets, configs, json) в папку сборки..."

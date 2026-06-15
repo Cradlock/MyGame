@@ -13,46 +13,46 @@
 
 // [Оболочка ресурса]
 typedef struct ResResource {
-  RESULT_CODE code;
-  Resource* resource;
+  sfr_result_code_t code;
+  sfr_resource_t* resource;
 } ReqResource;
 
 
 
 // [Оболочка Json узла]
 typedef struct ResJsonNode {
-  RESULT_CODE code;
+  sfr_result_code_t code;
 
 } ReqJsonNode;
 
 // [Оболочка used bytes]
 typedef struct ResUsedBytes {
-  RESULT_CODE code;
+  sfr_result_code_t code;
   size_t size;
 } ResUsedBytes;
 
 // [Оболочка Bytes offset]
 typedef struct ResOffsetBytes {
-  RESULT_CODE code;
+  sfr_result_code_t code; 
   int offset;
 } ResOffsetBytes; 
 
 // [Оболочка is_valid]
 typedef struct ResValid {
-  RESULT_CODE code;
+  sfr_result_code_t code;
 } ResValid;
 
 // [Оболчка размера]
 typedef struct ResSize {
-  RESULT_CODE code;
+  sfr_result_code_t code;
   int64_t size;
 } ResSize;
 
 
 // [Оболочка IStream]
 typedef struct ResStream {
-  RESULT_CODE code;
-  IStream* stream;
+  sfr_result_code_t code;
+  sfr_istream_t* stream;
 } ResStream;
 
 
