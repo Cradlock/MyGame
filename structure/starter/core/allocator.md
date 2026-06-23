@@ -1,8 +1,6 @@
 ## Система выделения памяти
 
 
-
-
 ## Обший класс менеджер
 class Allocator:
 init():
@@ -10,11 +8,9 @@ setMaxMemory():
 
 
 
-
 ### Init()
 Real memory = Get to OS 20% RAM: 
-Reserve virtual adress = 48гб;
-
+Reserve virtual adress = 100% * 4;
 
 
 #### In memory structure

@@ -86,6 +86,9 @@ add_custom_target(copy_engine_resources DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/res
 
 add_dependencies(app copy_engine_resources)
 
+file(COPY "${CMAKE_SOURCE_DIR}/../../licenses" 
+     DESTINATION "${CMAKE_BINARY_DIR}"
+)
 
 install(TARGETS app
     RUNTIME DESTINATION "bin" 

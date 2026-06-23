@@ -87,11 +87,10 @@ void BootLogger::set_cfg(const BootConfig* cfg){
   m_Cfg = cfg;
 
 try {
-    m_Debug = m_Cfg->get<bool>("debug");
+    m_Debug = m_Cfg->get<bool>("harddebug");
 } catch (const std::out_of_range&) {
     m_Debug = true;
 }
-
   
 }
 

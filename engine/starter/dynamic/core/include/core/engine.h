@@ -3,6 +3,7 @@
 #include "core/boot/BootConfig.h"
 #include "core/boot/BootLogger.h"
 #include "core/config/ConfigManager.h"
+#include "core/events/Dispatcher.h"
 #include "core/logger/LoggerManager.h"
 #include "core/memory/AllocatorManager.h"
 #include "core/rsm/ResManager.h"
@@ -17,10 +18,11 @@ private:
 // Сервисы
   BootConfig m_BootConfig;
   BootLogger m_BootLogger;
+  
+  std::unique_ptr<EventDispatcher> m_EventDispatcher;
 
-
-  std::unique_ptr<Logger> m_Logger;
   std::unique_ptr<Allocator> m_Allocator;
+  std::unique_ptr<Logger> m_Logger;
   std::unique_ptr<RSM> m_RSM; 
   
 

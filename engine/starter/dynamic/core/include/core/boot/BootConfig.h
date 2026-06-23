@@ -4,7 +4,6 @@
 
 
 #include "core/boot/BootLogger.h"
-#include "sfr/common/status_codes.h"
 #include <filesystem>
 #include <string>
 #include <string_view>

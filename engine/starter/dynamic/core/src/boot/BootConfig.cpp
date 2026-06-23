@@ -2,19 +2,14 @@
 
 #include "core/boot/BootConfig.h"
 #include "core/boot/BootLogger.h"
-#include "core/utils/pr.h"
 #include "core/utils/str.h"
 #include "sfr/core/logger/types.h"
-#include <algorithm>
 #include <filesystem>
 #include <fstream>
-#include <stdexcept>
 #include <string>
 #include <string_view>
-#include <variant>
 BootConfig::BootConfig()
 : m_Filename(".config_cfg.ini"){
-  
 
 }
 

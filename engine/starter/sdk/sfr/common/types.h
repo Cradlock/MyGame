@@ -1,8 +1,6 @@
 #pragma once 
 
 
-#include "sfr/common/status_codes.h"
-#include <cstdint>
 typedef enum sfr_types_e {
   SFR_T_VOID,
   SFR_T_UNKNOW,
