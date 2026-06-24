@@ -20,13 +20,15 @@ void BootConfig::set_dirpath(
 }
 
 void BootConfig::read(BootLogger& logger){
-  std::ifstream file(m_Filename);
-  
-
+ 
   if (m_Filename.empty()) {
     logger.log(SFR_LOG_FATAL, "BootConfig: Directory path was not set before calling read()!");
     return;
-  }
+  } 
+
+  std::ifstream file(m_Filename);
+  
+
 
   if(!file.is_open()){
     logger.log(SFR_LOG_FATAL,"Boot config not found!: Use Default settings"); 
@@ -59,23 +61,35 @@ void BootConfig::read(BootLogger& logger){
     if (check_bool == "true")       m_Storage[name] = true;
     else if (check_bool == "false") m_Storage[name] = false;
     else {
-      try {
-        size_t processed_chars = 0;
-        int parsed_int = std::stoi(value, &processed_chars);
-    
-        if (processed_chars == value.size()) {
-          m_Storage[name] = parsed_int;
-        } else {
-          m_Storage[name] = value; 
-        } 
+        try {
+            size_t processed_chars = 0;
+            
+            // 1. Сначала пробуем спарсить как INT
+            int parsed_int = std::stoi(value, &processed_chars);
+            if (processed_chars == value.size()) {
+                m_Storage[name] = parsed_int;
+                continue; // Успешно записали int, идем к следующей строке
+            }
 
-      }
-      catch (...) {
-          m_Storage[name] = value; 
-      }
-    }
+            // 2. Если int не сожрал всю строку (например, помешала точка '4.0'), пробуем DOUBLE
+            size_t processed_double_chars = 0;
+            double parsed_double = std::stod(value, &processed_double_chars);
+            if (processed_double_chars == value.size()) {
+                m_Storage[name] = parsed_double;
+                continue; // Успешно записали double
+            }
+
+            // 3. Если это и не int, и не double (какой-то мусор типа "44.22.11"), сохраняем как строку
+            m_Storage[name] = value;
+
+        }
+        catch (...) {
+            m_Storage[name] = value; 
+        }
+      }   
 
   }
+    
   
   file.close(); 
   

@@ -10,6 +10,7 @@
 #include "core/memory/AllocatorManager.h"
 #include "core/rsm/ResManager.h"
 #include "core/tick/TickManager.h"
+#include "core/utils/pr.h"
 #include "core/utils/root.h"
 #include "sfr/core/logger/types.h"
 #include <exception>
@@ -34,7 +35,7 @@ Engine::Engine()
 
     m_Allocator = std::make_unique<Allocator>();
     m_Allocator->init(&m_BootConfig,m_EventDispatcher.get(), &m_BootLogger);
-    
+
     m_Logger = std::make_unique<Logger>();
     m_Logger->init(&m_BootConfig,m_Root_path,m_EventDispatcher.get());
 

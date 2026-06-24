@@ -5,7 +5,7 @@ class LinearAllocator{
 private:
 
 public:
-  LinearAllocator() = default;
+  LinearAllocator();
   
 }; 
 

@@ -316,3 +316,27 @@ If linear segment overflow real memory:
 
 
 
+# 1. Используем официальный легковесный образ Python
+FROM python:3.11-slim
+
+# 2. Устанавливаем рабочую директорию внутри контейнера
+WORKDIR /app
+
+# 3. Настраиваем переменные окружения, чтобы Python не буферизировал логи
+# (это нужно, чтобы сразу видеть логи бота в консоли Docker)
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# 4. Сначала копируем только файл зависимостей (для эффективного кэширования)
+COPY requirements.txt .
+
+# 5. Обновляем pip и устанавливаем библиотеки без сохранения кэша
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# 6. Копируем все остальные файлы проекта в контейнер
+COPY . .
+
+# 7. Указываем команду для запуска бота (замените bot.py на ваш главный файл)
+CMD ["python", "bot.py"]
+

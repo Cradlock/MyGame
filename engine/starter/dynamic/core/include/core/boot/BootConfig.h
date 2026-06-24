@@ -15,7 +15,7 @@ class BootConfig{
     std::filesystem::path m_Filename;
     std::unordered_map<
       std::string, 
-      std::variant<bool,std::string,int>> m_Storage;     
+      std::variant<bool,std::string,int,double>> m_Storage;     
 
   public:
     BootConfig();
@@ -29,7 +29,6 @@ class BootConfig{
             throw std::out_of_range("BootConfig::get(): Critical key '" + k + "' not found!");
         }
 
-        // std::get<T> автоматически вытащит нужный тип из variant
         
         return std::get<T>(it->second);
     }

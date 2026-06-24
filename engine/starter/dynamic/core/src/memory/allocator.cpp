@@ -5,6 +5,7 @@
 #include "core/utils/pr.h"
 
 
+void Allocator::init (
   BootConfig* cfg,EventDispatcher* disp,BootLogger* lgr
 ){
   m_Dispatcher = disp;
