@@ -5,7 +5,10 @@
 
 typedef enum sfr_event_type_e : uint32_t {
   SFRE_MEMORY_LOW,
-  
+  SFRE_INFO_LOG,
+  SFRE_WARN_LOG,
+  SFRE_ERROR_LOG,
+  SFRE_CRITICAL_LOG
 } sfr_event_type_t;
 
 

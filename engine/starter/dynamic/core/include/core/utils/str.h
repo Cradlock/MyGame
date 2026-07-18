@@ -1,8 +1,10 @@
+
 #pragma once
-
-
-
 #include <string>
-std::string trim(const std::string&);
+#include <string_view>
 
-std::string str_lower(std::string str);
+std::string_view trim(std::string_view str);
+std::string trim_copy(std::string_view str);
+void trim_inplace(std::string& str);
+void str_lower_inplace(std::string& value);
+std::string str_lower_copy(std::string_view value);

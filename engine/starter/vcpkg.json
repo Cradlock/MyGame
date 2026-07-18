@@ -1,9 +1,9 @@
 {
-"name": "sandform-starter",
-"version-string": "1.0.0",
-"dependencies": [
-  "spdlog",
-  "fmt",
-  "rapidjson" 
-]
+  "name":"sfr-starter",
+  "version-string":"1.0.0",
+  "dependencies":[
+    "spdlog",
+    "fmt",
+    "rapidjson"
+  ]
 }

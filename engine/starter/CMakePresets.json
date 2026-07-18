@@ -36,8 +36,10 @@
         "CMAKE_SYSTEM_NAME": "Windows",
         "CMAKE_C_COMPILER": "i686-w64-mingw32-gcc",
         "CMAKE_CXX_COMPILER": "i686-w64-mingw32-g++",
+        
         "CMAKE_TOOLCHAIN_FILE": "$env{HOME}/vcpkg/scripts/buildsystems/vcpkg.cmake",
         "VCPKG_TARGET_TRIPLET": "x86-mingw-dynamic",
+
         "CROSS_SETTINGS": "cmake/sc-windows-x32.cmake",
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/../builder/tools/windows/x32"
       }

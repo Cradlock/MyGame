@@ -8,13 +8,14 @@
 void Allocator::init (
   BootConfig* cfg,EventDispatcher* disp,BootLogger* lgr
 ){
+  
+
   m_Dispatcher = disp;
   m_BootLogger = lgr; 
   m_BootConfig = cfg;
   
-  double m = m_BootConfig->get<int>("reservemultiplier");
-
-  LOG_PRINT(m);
+  double m = m_BootConfig->get<double>("reservemultiplier");
+  LOG_PRINT(m);  
 
 }
 

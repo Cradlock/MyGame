@@ -4,12 +4,13 @@
 
 
 #include "sfr/core/Allocator.h"
+#include "sfr/core/resources/Interface.h"
 typedef void* sfr_context_handle_t;
 
 
 typedef void* sfr_allocator_handle_t;
 typedef void* sfr_logger_handle_t;
-typedef void* sfr_resource_manager_handle_t;
+typedef void* sfr_resources_manager_handle_t;
 typedef void* sfr_config_manager_handle_t;
 typedef void* sfr_tick_manaher_handle_t;
 
@@ -20,12 +21,12 @@ typedef struct sfr_engine_context_s {
   
   sfr_allocator_handle_t allocator_intance;
   sfr_logger_handle_t logger_instance;
-  sfr_resource_manager_handle_t resource_manager_instance;
+  sfr_resources_manager_handle_t resource_manager_instance;
   sfr_config_manager_handle_t config_manager_instance;
   sfr_tick_manaher_handle_t tick_manager_instance; 
 
   const sfr_allocator_interface_s* allocator_interface; 
-
+  const sfr_resources_interface_t* resource_manager_interface;   
 } sfr_engine_context_t;
 
 

@@ -8,7 +8,6 @@ cmake_minimum_required(VERSION 3.21)
 set(VCPKG_APPLOCAL_DEPS ON CACHE BOOL "Disable vcpkg applocal deployment" FORCE)
 
 set(BUILD_SHARED_LIBS ON CACHE BOOL "Force shared libraries" FORCE)
-set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "Force x64-windows dynamic" FORCE)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Проект - инстанс

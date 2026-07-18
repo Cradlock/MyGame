@@ -1,17 +1,20 @@
 #include "core/Engine.h"
-#include "core/utils/pr.h"
 #include <iostream>
-#include <sfr/common/status_codes.h>
+
+
+
+extern "C" {
+  
+  
+}
 
 
 int main(){ 
-  Engine instance;  
-  
-  std::cout << 1 << std::endl;
+  Engine instance;
+
 
   return 0;
 }
-
 
 
 

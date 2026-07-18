@@ -8,12 +8,12 @@ class RSM{
 private:
     EventDispatcher* m_Dispatcher = nullptr;
 
-    const Logger* m_Logger = nullptr;
+    Logger* m_Logger = nullptr;
 public:
   RSM() = default;
   ~RSM() = default;
   
-  void init(EventDispatcher*);
+  void init(EventDispatcher*,Logger*);
 
 
 

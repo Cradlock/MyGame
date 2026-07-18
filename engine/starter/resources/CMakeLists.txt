@@ -1,5 +1,5 @@
 # Копирование ресурсов
-set(RES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+set(RES_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
 if(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     set(RES_TARGET_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
@@ -10,14 +10,19 @@ endif()
 set(RESOURCES_TO_COPY
     "${RES_SOURCE_DIR}/assets"
     "${RES_SOURCE_DIR}/configs"
-    "${RES_SOURCE_DIR}/.plugins.json"
+    "${RES_SOURCE_DIR}/.plugins.ini"
     "${RES_SOURCE_DIR}/.config.ini"
 )
 add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/resources.stamp"
+    
+    DEPENDS 
+        "${RES_SOURCE_DIR}/.plugins.ini"
+        "${RES_SOURCE_DIR}/.config.ini"
+
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${RES_SOURCE_DIR}/assets" "${RES_TARGET_DIR}/assets"
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${RES_SOURCE_DIR}/configs" "${RES_TARGET_DIR}/configs"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${RES_SOURCE_DIR}/.plugins.json" "${RES_TARGET_DIR}/.plugins.json"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${RES_SOURCE_DIR}/.plugins.ini" "${RES_TARGET_DIR}/.plugins.ini"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${RES_SOURCE_DIR}/.config.ini" "${RES_TARGET_DIR}/.config.ini"
     # Создаем маркер-файл, чтобы Ninja понимал, что копирование завершено успешно
     COMMAND ${CMAKE_COMMAND} -E touch "${CMAKE_CURRENT_BINARY_DIR}/resources.stamp"

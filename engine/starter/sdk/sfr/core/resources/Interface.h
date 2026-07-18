@@ -38,3 +38,13 @@ typedef sfr_resource_t* (*sfr_resource_creator_fn)(const char* path);
 
 
 
+
+typedef struct sfr_resources_interface_s {
+
+} sfr_resources_interface_t;
+
+
+
+
+
+

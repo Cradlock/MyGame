@@ -1,9 +1,8 @@
 #pragma once 
 
 
-
-
 #include "core/boot/BootLogger.h"
+#include "core/utils/str.h"
 #include <filesystem>
 #include <string>
 #include <string_view>
@@ -23,7 +22,7 @@ class BootConfig{
     template <typename T>
     T get(std::string_view key) const {
         std::string k(key);
-        auto it = m_Storage.find(k);
+        auto it = m_Storage.find( str_lower_copy(k));
         
         if (it == m_Storage.end()) {
             throw std::out_of_range("BootConfig::get(): Critical key '" + k + "' not found!");
@@ -36,7 +35,7 @@ class BootConfig{
     template <typename T>
     T get(std::string_view key, const T& default_value) {
         std::string k(key);
-        auto it = m_Storage.find(k);
+        auto it = m_Storage.find(str_lower_copy(k));
 
         // Если ключ найден, просто возвращаем его значение
         if (it != m_Storage.end()) {

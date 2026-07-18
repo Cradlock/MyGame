@@ -9,9 +9,11 @@ set(CORE_SOURCES
   src/memory/stack.cpp
   src/memory/pool.cpp
   src/logger/LoggerManager.cpp
+  src/rcm/Manager.cpp
   src/utils/root.cpp
   src/utils/time.cpp
-  src/utils/str.cpp 
+  src/utils/str.cpp
+  src/utils/rini.cpp
 )
 
 
@@ -21,7 +23,6 @@ target_include_directories(core PUBLIC
   include 
 )
 
-set(X_VCPKG_APPLOCAL_DEPS OFF)
 
 find_package(spdlog CONFIG REQUIRED)
 

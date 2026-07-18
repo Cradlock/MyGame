@@ -14,9 +14,9 @@ BootLogger::BootLogger()
 : m_Debug(false)
 {   
 
-  m_Filename = std::filesystem::path(get_formatted_time("%d-%m-%Y_%H-%M-%S")+".bootlog.txt");
+  m_Filename = std::filesystem::path("SFR.bootlog.txt");
   
-  this->m_FileStream.open(m_Filename, std::ios::out);
+  this->m_FileStream.open(m_Filename,std::ios::out | std::ios::app);
 
   if (m_FileStream.is_open()) {
     if(m_Debug) m_FileStream << "=== SANDFORM ENGINE BOOTLOG INITIATED ===\n";
@@ -38,6 +38,7 @@ BootLogger::~BootLogger(){
 void BootLogger::log(
   sfr_type_log_t type,std::string_view msg
 )  {
+    
 
     std::string_view level_str = "[UNKNOWN]";
     switch (type) {
@@ -46,8 +47,9 @@ void BootLogger::log(
         case SFR_LOG_ERROR:   level_str = "[ERROR] "; break;
         case SFR_LOG_FATAL:   level_str = "[FATAL] "; break;
     }
+  
+    m_FileStream << level_str << '[' + get_formatted_time("%d-%m-%Y_%H-%M-%S") + ']' << msg << "\n";
 
-    m_FileStream << level_str << msg << "\n";
     m_FileStream.flush();
 
 }
@@ -62,7 +64,7 @@ void BootLogger::relocate(
   }
 
     std::filesystem::path old_path = m_Filename;
-    std::filesystem::path new_path = new_dir / old_path.filename();
+    std::filesystem::path new_path = new_dir  / old_path.filename();
 
     std::error_code ec;
     std::filesystem::rename(old_path, new_path, ec);

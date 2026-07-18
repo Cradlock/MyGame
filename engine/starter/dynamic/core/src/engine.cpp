@@ -19,7 +19,6 @@
 
 Engine::Engine()
 {
- 
   try{ 
     m_Root_path = get_executable_path().parent_path(); 
   
@@ -35,18 +34,21 @@ Engine::Engine()
 
     m_Allocator = std::make_unique<Allocator>();
     m_Allocator->init(&m_BootConfig,m_EventDispatcher.get(), &m_BootLogger);
+  
+
 
     m_Logger = std::make_unique<Logger>();
     m_Logger->init(&m_BootConfig,m_Root_path,m_EventDispatcher.get());
 
     
     m_RSM = std::make_unique<RSM>();
-    
+    m_RSM->init(m_EventDispatcher.get(),m_Logger.get());
+
     m_Configer = std::make_unique<Configer>();
 
     m_Ticker = std::make_unique<Ticker>();
   
-
+  
   } catch(const std::exception& err){
     m_BootLogger.log(SFR_LOG_FATAL, "Error in Engine constructor:" + std::string(err.what()) ); 
   } catch (...) {

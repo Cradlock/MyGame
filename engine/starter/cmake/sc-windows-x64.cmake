@@ -15,10 +15,6 @@ add_compile_options(
     -Wall
 )
 
-# 3. Важнейшие флаги линковщика для динамического рантайма
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -shared-libgcc -shared-libstdc++")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -shared-libgcc -shared-libstdc++")
-
 # Поиск системных DLL MinGW (для Linux хоста)
 if(NOT DEFINED MINGW_BIN_DIR)
     set(MINGW_BIN_DIR "/usr/x86_64-w64-mingw32/bin")
@@ -41,10 +37,13 @@ add_custom_command(TARGET app POST_BUILD
     COMMENT "Deploying all Windows runtime and target DLLs..."
 )
 
+
 # 5. Дебаг-вывод зависимостей в консоль
 add_custom_target(print_dlls ALL
     COMMAND ${CMAKE_COMMAND} -E echo "--- DLLS FOR APP: ---"
     COMMAND ${CMAKE_COMMAND} -E echo "$<TARGET_RUNTIME_DLLS:app>"
+    COMMAND ${CMAKE_COMMAND} -E echo "$<TARGET_RUNTIME_DLLS:core>"
+    COMMAND ${CMAKE_COMMAND} -E echo "$<TARGET_RUNTIME_DLLS:logic>"
     COMMAND ${CMAKE_COMMAND} -E echo "---------------------------------------"
     COMMAND_EXPAND_LISTS
 )

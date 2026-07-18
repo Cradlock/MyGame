@@ -16,11 +16,6 @@ add_compile_options(
     -Wall
 )
 
-# 3. Флаги линковщика
-# Добавляем "-Wl,--large-address-aware". Это КРИТИЧЕСКИ важно для 32-битного движка! 
-# Этот флаг разрешает 32-битному процессу жрать до 4 ГБ RAM на 64-битных системах вместо стандартных 2 ГБ.
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -shared-libgcc -shared-libstdc++ -Wl,--large-address-aware")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -shared-libgcc -shared-libstdc++")
 
 # Определяем пути к системным DLL MinGW в Arch Linux (i686 архитектура)
 if(NOT DEFINED MINGW_BIN_DIR)
